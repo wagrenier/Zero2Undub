@@ -12,4 +12,8 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Zero2UndubProcess\Zero2UndubProcess.csproj" />
+    </ItemGroup>
+
 </Project>

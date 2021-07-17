@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Zero2Undub"
         mc:Ignorable="d"
-        Title="PS2 Fatal Frame Unpacker" Height="472.25" Width="344.401" ResizeMode="NoResize" Background="#FFD6DBE9" WindowStyle="ToolWindow">
+        Title="PS2 Fatal Frame 2 Undubber" Height="472.25" Width="344.401" ResizeMode="NoResize" Background="#FFD6DBE9" WindowStyle="ToolWindow">
     <Window.Effect>
         <DropShadowEffect/>
     </Window.Effect>
@@ -15,13 +15,10 @@
             <ColumnDefinition Width="23*"/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="button" Content="Unpack IMG_BD" HorizontalAlignment="Left" Height="20" Margin="38,347,0,0" VerticalAlignment="Top" Width="99" FontSize="10.667" Click="Button2_Click" Background="#FF293955" Foreground="#FFD6DBE9" BorderBrush="{x:Null}"/>
-        <CheckBox x:Name="checkBox" Content="Use external Deless tool" HorizontalAlignment="Left" Margin="96,259,0,0" VerticalAlignment="Top" Foreground="#FF293955" Height="16" Width="150"/>
-        <CheckBox x:Name="checkBox1" Content="Use built-in Less library" HorizontalAlignment="Left" Margin="96,287,0,0" VerticalAlignment="Top" IsEnabled="False" Height="16" Width="150"/>
-        <Button x:Name="button1" Content="Write patch" HorizontalAlignment="Left" Margin="198,347,-8.856,0" VerticalAlignment="Top" Width="99" Click="Button_Click" Foreground="#FFD6DBE9" Background="#FF2C3E5F" BorderBrush="{x:Null}" Height="22"/>
+        <Button x:Name="button" Content="Undub" HorizontalAlignment="Left" Height="20" Margin="38,347,0,0" VerticalAlignment="Top" Width="99" FontSize="10.667" Click="LaunchUndubbing" Background="#FF293955" Foreground="#FFD6DBE9" BorderBrush="{x:Null}"/>
+        <CheckBox x:Name="checkBox" Content="Compress Large Assets" HorizontalAlignment="Left" Margin="96,259,0,0" VerticalAlignment="Top" Foreground="#FF293955" Height="16" Width="150"/>
+        <Button x:Name="button1" Content="Select Files" HorizontalAlignment="Left" Margin="198,347,-8.856,0" VerticalAlignment="Top" Width="99" Click="Button_Click" Foreground="#FFD6DBE9" Background="#FF2C3E5F" BorderBrush="{x:Null}" Height="22"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="231" Margin="59,10,0,0" VerticalAlignment="Top" Width="220" Source="main.png" Stretch="None"/>
-        <Button x:Name="button2" Content="Build ISO from IML" HorizontalAlignment="Left" Margin="38,381,0,0" Width="99" Height="20" VerticalAlignment="Top" Click="Button2_Click" FontSize="10.667" Foreground="#FFD6DBE9" Background="#FF2C3E5F" BorderBrush="{x:Null}"/>
-        <CheckBox x:Name="checkBox2" Content="Join the LIMG sector (PS2)" HorizontalAlignment="Left" Margin="96,312,0,0" VerticalAlignment="Top" IsChecked="True" Foreground="#FF2C3E5F" Height="16" Width="132"/>
 
     </Grid>
 </Window>
