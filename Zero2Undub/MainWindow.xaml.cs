@@ -42,7 +42,7 @@ namespace Zero2Undub
             var jpFileDialog = new OpenFileDialog
             {
                 Filter = "iso files (*.iso)|*.iso|All files (*.*)|*.*", 
-                Title = "Select the USA ISO"
+                Title = "Select the JP ISO"
             };
 
             if (jpFileDialog.ShowDialog() == true)
