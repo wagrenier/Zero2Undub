@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zero2Undub", "Zero2Undub\Zero2Undub.csproj", "{2808D484-A620-4D01-B855-00A964C36386}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zero2UndubProcess", "Zero2UndubProcess\Zero2UndubProcess.csproj", "{CAFC25E2-635D-4237-82AA-09000EA0EE76}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2808D484-A620-4D01-B855-00A964C36386}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2808D484-A620-4D01-B855-00A964C36386}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2808D484-A620-4D01-B855-00A964C36386}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2808D484-A620-4D01-B855-00A964C36386}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAFC25E2-635D-4237-82AA-09000EA0EE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFC25E2-635D-4237-82AA-09000EA0EE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAFC25E2-635D-4237-82AA-09000EA0EE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAFC25E2-635D-4237-82AA-09000EA0EE76}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
