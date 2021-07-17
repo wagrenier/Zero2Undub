@@ -4,16 +4,22 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>zero2undub_icon.ico</ApplicationIcon>
+        <NoWin32Manifest>true</NoWin32Manifest>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="main.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+      <None Remove="main.png" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Zero2UndubProcess\Zero2UndubProcess.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="main.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
 </Project>
