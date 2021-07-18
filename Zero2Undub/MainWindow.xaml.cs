@@ -48,7 +48,8 @@ namespace Zero2Undub
                 (sender as BackgroundWorker)?.ReportProgress(100 * importer.UndubbedFiles / (Ps2Constants.NumberFiles));
                 Thread.Sleep(100);
             }
-
+            
+            (sender as BackgroundWorker)?.ReportProgress(100 * importer.UndubbedFiles / (Ps2Constants.NumberFiles));
             MessageBox.Show("All Done! Enjoy the game :D", "PS2 Fatal Frame 2 Undubber");
         }
 
