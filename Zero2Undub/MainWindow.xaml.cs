@@ -32,6 +32,7 @@ namespace Zero2Undub
                 return;
             }
             
+            MessageBox.Show("Copying the US ISO, this may take a few minutes!", "PS2 Fatal Frame 2 Undubber");
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
