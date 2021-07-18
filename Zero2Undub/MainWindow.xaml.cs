@@ -50,6 +50,13 @@ namespace Zero2Undub
             }
             
             (sender as BackgroundWorker)?.ReportProgress(100 * importer.UndubbedFiles / (Ps2Constants.NumberFiles));
+
+            if (!importer.IsSuccess)
+            {
+                MessageBox.Show($"The program failed with the following message: {importer.ErrorMessage}", "PS2 Fatal Frame 2 Undubber");
+                return;
+            }
+            
             MessageBox.Show("All Done! Enjoy the game :D", "PS2 Fatal Frame 2 Undubber");
         }
 

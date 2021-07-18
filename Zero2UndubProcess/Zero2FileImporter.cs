@@ -9,6 +9,10 @@ namespace Zero2UndubProcess
         public int UndubbedFiles { get; private set; }
         public bool IsCompleted { get; private set; } = false;
 
+        public bool IsSuccess { get; private set; } = false;
+        
+        public string ErrorMessage { get; private set; }
+
         private const int TocLocationInUsIso = 0x2F90B8;
         private const int ImgBinStartAddressInIso = 0x30D40000;
         private FileInfo JpIsoFile { get; set; }
@@ -38,32 +42,44 @@ namespace Zero2UndubProcess
 
         public void UndubGame()
         {
-            for (var i = 0; i < Ps2Constants.NumberFiles; i++)
+            try
             {
-                var currentFileJp = _jpFileDb.Zero2Files[i];
-                var currentFileUs = _usFileDb.Zero2Files[i];
-                UndubbedFiles = i;
-
-                if (currentFileJp.FileExtension != FileExtension.Video &&
-                    currentFileJp.FileExtension != FileExtension.Audio)
+                for (var i = 0; i < Ps2Constants.NumberFiles; i++)
                 {
-                    continue;
-                }
+                    var currentFileJp = _jpFileDb.Zero2Files[i];
+                    var currentFileUs = _usFileDb.Zero2Files[i];
+                    UndubbedFiles = i;
+
+                    if (currentFileJp.FileExtension != FileExtension.Video &&
+                        currentFileJp.FileExtension != FileExtension.Audio)
+                    {
+                        continue;
+                    }
                 
-                if (currentFileJp.Size <= currentFileUs.Size)
-                {
-                    Console.WriteLine($"Undubbing file {currentFileJp.FileId} of type {currentFileJp.FileExtension}");
-                    WriteNewFile(currentFileUs, currentFileJp);
+                    if (currentFileJp.Size <= currentFileUs.Size)
+                    {
+                        Console.WriteLine($"Undubbing file {currentFileJp.FileId} of type {currentFileJp.FileExtension}");
+                        WriteNewFile(currentFileUs, currentFileJp);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"File {currentFileJp.FileId} of type {currentFileJp.FileExtension} is too big");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine($"File {currentFileJp.FileId} of type {currentFileJp.FileExtension} is too big");
-                }
-            }
             
-            Console.WriteLine("Done!");
+                Console.WriteLine("Done!");
 
-            IsCompleted = true;
+                IsCompleted = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                IsSuccess = false;
+                IsCompleted = true;
+                return;
+            }
+
+            IsSuccess = true;
         }
 
         private void WriteNewFile(Zero2File usFile, Zero2File jpFile)
@@ -97,7 +113,9 @@ namespace Zero2UndubProcess
             var fileLocation = fileIndex * 0xc + 4;
             usIsoData.Seek(TocLocationInUsIso, SeekOrigin.Begin);
             usIsoData.Seek(fileLocation, SeekOrigin.Current);
-            usIsoData.Write(BitConverter.GetBytes(newSize).Reverse().ToArray());
+
+            var buffer = BitConverter.GetBytes(newSize);
+            usIsoData.Write(buffer);
         }
     }
 }
