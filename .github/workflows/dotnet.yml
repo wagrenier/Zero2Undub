@@ -60,7 +60,7 @@ jobs:
     - name: Zip App
       run: |
         cd release
-        tar -cvf ../zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip *
+        zip -r ../zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip *
         
     # Creates a new TAG version
     - name: Create release
