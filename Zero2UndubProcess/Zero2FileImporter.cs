@@ -44,17 +44,20 @@ namespace Zero2UndubProcess
                 var currentFileUs = _usFileDb.Zero2Files[i];
                 UndubbedFiles = i;
 
-                if (currentFileJp.FileExtension == FileExtension.Video || currentFileJp.FileExtension == FileExtension.Audio)
+                if (currentFileJp.FileExtension != FileExtension.Video &&
+                    currentFileJp.FileExtension != FileExtension.Audio)
                 {
-                    if (currentFileJp.Size <= currentFileUs.Size)
-                    {
-                        Console.WriteLine($"Undubbing file {currentFileJp.FileId} of type {currentFileJp.FileExtension}");
-                        WriteNewFile(currentFileUs, currentFileJp);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"File {currentFileJp.FileId} of type {currentFileJp.FileExtension} is too big");
-                    }
+                    continue;
+                }
+                
+                if (currentFileJp.Size <= currentFileUs.Size)
+                {
+                    Console.WriteLine($"Undubbing file {currentFileJp.FileId} of type {currentFileJp.FileExtension}");
+                    WriteNewFile(currentFileUs, currentFileJp);
+                }
+                else
+                {
+                    Console.WriteLine($"File {currentFileJp.FileId} of type {currentFileJp.FileExtension} is too big");
                 }
             }
             
