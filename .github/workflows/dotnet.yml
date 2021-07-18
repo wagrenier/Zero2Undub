@@ -37,7 +37,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     
     - name: Publish
-      run: dotnet publish -c Release -p:PublishSingleFile=true -r win-x64 -o ./
+      run: dotnet publish -c Release /p:DebugType=None -o ./release
         
     # Setups the env vars for gitversion
     - uses: gittools/actions/gitversion/setup@v0.9.7
@@ -59,7 +59,7 @@ jobs:
     # Zips the binaries and required files
     - name: Zip App
       run: |
-        tar -cf zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip Zero2Undub.exe DeLESS.exe MFAudio.exe
+        tar -zcvf zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip release
         
     # Creates a new TAG version
     - name: Create release
