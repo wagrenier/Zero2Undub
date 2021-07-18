@@ -99,8 +99,6 @@ namespace Zero2Undub
             {
                 JpIsoFile = jpFileDialog.FileName;
             }
-            
-            
         }
     }
 }
