@@ -59,7 +59,9 @@ jobs:
     # Zips the binaries and required files
     - name: Zip App
       run: |
-        tar -zcvf zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip release
+        cd release
+        tar -cvf zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip *
+        cd ..
         
     # Creates a new TAG version
     - name: Create release
@@ -82,6 +84,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip
+        asset_path: ./release/zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip
         asset_name: zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip
         asset_content_type: application/zip
