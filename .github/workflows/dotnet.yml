@@ -60,7 +60,7 @@ jobs:
     - name: Zip App
       run: |
         cd release
-        sudo apt-get -y install zip
+        apt-get -y install zip
         zip -r ../zero2undub_v${{ steps.gitversion.outputs.majorMinorPatch }}.zip *
         
     # Creates a new TAG version
