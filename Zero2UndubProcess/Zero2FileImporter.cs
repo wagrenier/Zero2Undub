@@ -9,8 +9,8 @@ namespace Zero2UndubProcess
         public int UndubbedFiles { get; private set; }
         public bool IsCompleted { get; private set; } = false;
 
-        private static int TocLocationInUsIso = 0x2F90B8;
-        private static int ImgBinStartAddressInIso = 0x30D40000;
+        private const int TocLocationInUsIso = 0x2F90B8;
+        private const int ImgBinStartAddressInIso = 0x30D40000;
         private FileInfo JpIsoFile { get; set; }
         private FileInfo UsIsoFile { get; set; }
         private BinaryReader jpIsoData { get; set; }
