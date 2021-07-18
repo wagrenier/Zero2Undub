@@ -6,6 +6,9 @@ namespace Zero2UndubProcess
 {
     public class Zero2FileImporter
     {
+        public int UndubbedFiles { get; private set; }
+        public bool IsCompleted { get; private set; } = false;
+
         private static int TocLocationInUsIso = 0x2F90B8;
         private static int ImgBinStartAddressInIso = 0x30D40000;
         private FileInfo JpIsoFile { get; set; }
@@ -33,12 +36,13 @@ namespace Zero2UndubProcess
             fileImporter.UndubGame();
         }
 
-        private void UndubGame()
+        public void UndubGame()
         {
             for (var i = 0; i < Ps2Constants.NumberFiles; i++)
             {
                 var currentFileJp = _jpFileDb.Zero2Files[i];
                 var currentFileUs = _usFileDb.Zero2Files[i];
+                UndubbedFiles = i;
 
                 if (currentFileJp.FileExtension == FileExtension.Video || currentFileJp.FileExtension == FileExtension.Audio)
                 {
@@ -53,6 +57,10 @@ namespace Zero2UndubProcess
                     }
                 }
             }
+            
+            Console.WriteLine("Done!");
+
+            IsCompleted = true;
         }
 
         private void WriteNewFile(Zero2File usFile, Zero2File jpFile)

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 using Zero2UndubProcess;
 
@@ -12,18 +16,62 @@ namespace Zero2Undub
     {
         private string JpIsoFile { get; set; }
         private string UsIsoFile { get; set; }
-        
+        private bool IsUndubLaunched { get; set; } = false;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void LaunchUndubbing(object sender, RoutedEventArgs e)
+        private void UndubGame(object sender, DoWorkEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(JpIsoFile) && !string.IsNullOrWhiteSpace(UsIsoFile))
+            
+            if (string.IsNullOrWhiteSpace(JpIsoFile) || string.IsNullOrWhiteSpace(UsIsoFile))
             {
-                Zero2FileImporter.LaunchUndub(UsIsoFile, JpIsoFile);
+                MessageBox.Show("Please select the files before!", "PS2 Fatal Frame 2 Undubber");
+                return;
             }
+            
+            IsUndubLaunched = true;
+                
+            (sender as BackgroundWorker)?.ReportProgress(10);
+            var importer = new Zero2FileImporter(UsIsoFile, JpIsoFile);
+                
+            var task = Task.Factory.StartNew(() =>
+            {
+                importer.UndubGame();
+            });
+                
+            while (!importer.IsCompleted)
+            {
+                (sender as BackgroundWorker)?.ReportProgress(100 * importer.UndubbedFiles / (Ps2Constants.NumberFiles));
+                Thread.Sleep(100);
+            }
+
+            MessageBox.Show("All Done! Enjoy the game :D", "PS2 Fatal Frame 2 Undubber");
+        }
+
+        private void LaunchUndubbing(object sender, EventArgs e)
+        {
+            if (IsUndubLaunched)
+            {
+                return;
+            }
+
+            var worker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true
+            };
+
+            worker.DoWork += UndubGame;
+            worker.ProgressChanged += worker_ProgressChanged;
+
+            worker.RunWorkerAsync();
+        }
+
+        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pbStatus.Value = e.ProgressPercentage;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -49,15 +97,8 @@ namespace Zero2Undub
             {
                 JpIsoFile = jpFileDialog.FileName;
             }
-        }
-
-        private void Button2_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                Console.WriteLine("Hi!");
-            }
+            
+            
         }
     }
 }

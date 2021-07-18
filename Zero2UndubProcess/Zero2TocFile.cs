@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using static System.Enum;
 using static System.IO.File;
+using System.Text.Json;
 
 namespace Zero2UndubProcess
 {
@@ -31,8 +28,9 @@ namespace Zero2UndubProcess
         public Zero2TocFile(int p_cd_dat, string cd_dat_tbl, string file_ext_dat)
         {
             _pCdDat = p_cd_dat;
-            _cdDatTbl = JsonConvert.DeserializeObject<Dictionary<string, long>>(ReadAllText(cd_dat_tbl));
-            _fileExtDat = JsonConvert.DeserializeObject<List<int>>(ReadAllText(file_ext_dat));
+            
+            _cdDatTbl = JsonSerializer.Deserialize<Dictionary<string, long>>(ReadAllText(cd_dat_tbl));
+            _fileExtDat = JsonSerializer.Deserialize<List<int>>(ReadAllText(file_ext_dat));
             Zero2Files = new List<Zero2File>();
         }
 
