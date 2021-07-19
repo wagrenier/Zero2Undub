@@ -61,6 +61,10 @@ namespace Zero2UndubProcess
                         Console.WriteLine($"Undubbing file {currentFileJp.FileId} of type {currentFileJp.FileExtension}");
                         WriteNewFile(currentFileUs, currentFileJp);
                     }
+                    else if (currentFileJp.FileExtension == FileExtension.Audio)
+                    {
+                        CompressAudioFile(currentFileUs, currentFileJp);
+                    }
                     else
                     {
                         Console.WriteLine($"File {currentFileJp.FileId} of type {currentFileJp.FileExtension} is too big");
@@ -80,6 +84,189 @@ namespace Zero2UndubProcess
             }
 
             IsSuccess = true;
+        }
+
+        private void CompressAudioFile(Zero2File usFile, Zero2File jpFile)
+        {
+            /**
+             * Frequency : 44100, located at address -> 0x20, 0x3C
+             * Channels : 2, located at address -> 0x8
+             * Samples : 16 bits always
+             * Interleave : 800, located at address -> 0x14
+             * Offset : 1000, located at address -> 0x4
+             *
+             * SndBnkPlay
+             *
+             * MFAudio Command
+             * .\MFAudio.exe /IF44100 /IC2 /II800 /IH1000 /OTRAWC /OF44100 /OC2 /OI800 "2581_JP.str" "compressed.str"
+             */
+
+            if (_usFileDb.Zero2Files[usFile.FileId - 1].FileExtension != FileExtension.Dxh)
+            {
+                Console.WriteLine($"Ignore file {usFile.FileId} because its header could not be found");
+            }
+            
+            ExtractAudioFile(jpFile);
+            var fileInfo = GetAudioFileInformation(jpFile);
+            
+            CompressAudio(usFile, jpFile, fileInfo);
+
+            File.Delete($"{UsIsoFile.DirectoryName}/{jpFile.FileId}.{jpFile.FileExtension}");
+        }
+
+        private void CompressAudio(Zero2File usFile, Zero2File jpFile, AudioFileInfo fileInfo)
+        {
+            var wasSuccessful = ExternalProcesses.MfAudioCompress(jpFile, fileInfo, 20000, UsIsoFile.DirectoryName);
+
+            if (!wasSuccessful)
+            {
+                return;
+            }
+
+            fileInfo.Frequency = 20000;
+            WriteNewCompressedFile(usFile, jpFile, fileInfo);
+            
+            File.Delete($"{UsIsoFile.DirectoryName}/{jpFile.FileId}_compressed.{jpFile.FileExtension}");
+        }
+        
+        private AudioFileInfo GetAudioFileInformation(Zero2File audioFile)
+        {
+            /**
+             * Frequency : 44100, located at address -> 0x20, 0x3C
+             * Channels : 2, located at address -> 0x8
+             * Samples : 16 bits always
+             * Interleave : 800, located at address -> 0x14
+             * Offset : 1000, located at address -> 0x4
+             *
+             * 0x28 & 0x44 -> write 6555306
+             *
+             * When there is only 1 audio channel, then there is not interleave
+             */
+
+            var headerFile = _jpFileDb.Zero2Files[audioFile.FileId - 1];
+            
+            JpSeekFile(headerFile);
+
+            jpIsoData.BaseStream.Seek(0x20, SeekOrigin.Current);
+            
+            var audioFrequency = jpIsoData.ReadUInt16();
+            
+            JpSeekFile(headerFile);
+            
+            jpIsoData.BaseStream.Seek(0x14, SeekOrigin.Current);
+
+            var interleave = jpIsoData.ReadInt16();
+            
+            JpSeekFile(headerFile);
+
+            jpIsoData.BaseStream.Seek(0x4, SeekOrigin.Current);
+            
+            var offset = jpIsoData.ReadInt16();
+            
+            JpSeekFile(headerFile);
+
+            jpIsoData.BaseStream.Seek(0x8, SeekOrigin.Current);
+            
+            var channel = jpIsoData.ReadInt16();
+
+            return new AudioFileInfo
+            {
+                Frequency = audioFrequency,
+                Interleave = interleave,
+                Offset = offset,
+                Channel = channel
+            };
+        }
+
+        private void WriteAudioFileHeader(Zero2File audioFile, AudioFileInfo fileInfo)
+        {
+            var headerFile = _usFileDb.Zero2Files[audioFile.FileId - 1];
+            var headerFileJp = _jpFileDb.Zero2Files[audioFile.FileId - 1];
+            
+            JpSeekFile(headerFileJp);
+
+            var buff = jpIsoData.ReadBytes((int)headerFileJp.Size);
+            
+            UsSeekFile(headerFile);
+            
+            usIsoData.Write(buff);
+            
+            UsSeekFile(headerFile);
+            
+            Console.WriteLine($"Stream Offset {usIsoData.BaseStream.Position}");
+
+            usIsoData.Seek(0x20, SeekOrigin.Current);
+            
+            usIsoData.Write((UInt16)fileInfo.Frequency);
+
+            if (fileInfo.Channel == 2)
+            {
+                UsSeekFile(headerFile);
+            
+                usIsoData.Seek(0x3C, SeekOrigin.Current);
+            
+                usIsoData.Write((UInt16)fileInfo.Frequency);
+                
+                UsSeekFile(headerFile);
+
+                usIsoData.Seek(0x14, SeekOrigin.Current);
+            
+                usIsoData.Write(fileInfo.Interleave);
+                
+                // 0x28 & 0x44 -> write 6555306
+                UsSeekFile(headerFile);
+
+                usIsoData.Seek(0x44, SeekOrigin.Current);
+            
+                usIsoData.Write(6555306);
+            }
+            
+            // 0x28 & 0x44 -> write 6555306
+            UsSeekFile(headerFile);
+
+            usIsoData.Seek(0x28, SeekOrigin.Current);
+            
+            usIsoData.Write(6555306);
+            
+            UsSeekFile(headerFile);
+
+            usIsoData.Seek(0x4, SeekOrigin.Current);
+            
+            usIsoData.Write(fileInfo.Offset);
+        }
+
+        private void ExtractAudioFile(Zero2File audioFile)
+        {
+            JpSeekFile(audioFile);
+            var audioFileBuffer = jpIsoData.ReadBytes((int)audioFile.Size);
+            var binaryWriter = new BinaryWriter(File.OpenWrite($"{UsIsoFile.DirectoryName}/{audioFile.FileId}.{audioFile.FileExtension}"));
+            binaryWriter.Write(audioFileBuffer);
+            binaryWriter.Close();
+        }
+
+        private bool WriteNewCompressedFile(Zero2File usFile, Zero2File jpFile, AudioFileInfo fileInfo)
+        {
+            var compressedFileInfo = new FileInfo($"{UsIsoFile.DirectoryName}/{jpFile.FileId}_compressed.{jpFile.FileExtension}");
+
+            if (compressedFileInfo.Length > usFile.Size)
+            {
+                Console.WriteLine($"File size {compressedFileInfo.Length} is still too big");
+                return false;
+            }
+            
+            var binaryReader = new BinaryReader(File.OpenRead($"{UsIsoFile.DirectoryName}/{jpFile.FileId}_compressed.{jpFile.FileExtension}"));
+            var fileBuffer = binaryReader.ReadBytes((int) compressedFileInfo.Length);
+            binaryReader.Close();
+            
+            UsSeekFile(usFile);
+            
+            usIsoData.Write(fileBuffer);
+            
+            WriteFileNewSize(usFile.FileId, (int) compressedFileInfo.Length);
+            
+            WriteAudioFileHeader(usFile, fileInfo);
+
+            return true;
         }
 
         private void WriteNewFile(Zero2File usFile, Zero2File jpFile)
@@ -117,5 +304,13 @@ namespace Zero2UndubProcess
             var buffer = BitConverter.GetBytes(newSize);
             usIsoData.Write(buffer);
         }
+    }
+    
+    public class AudioFileInfo
+    {
+        public int Frequency { get; set; }
+        public int Interleave { get; set; }
+        public int Offset { get; set; }
+        public int Channel { get; set; }
     }
 }
