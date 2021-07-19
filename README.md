@@ -5,8 +5,6 @@
 
 Undub project for Fatal Frame 2 PS2 (Project Zero 2零紅い蝶)
 
-Initial release of Zero2Undub
-
 Includes:
 * All assets that are smaller or equal size in the JP version will be undubbed
 
