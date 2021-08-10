@@ -20,7 +20,5 @@
         <Button x:Name="button1" Content="Select Files" HorizontalAlignment="Left" Margin="198,347,-8.856,0" VerticalAlignment="Top" Width="99" Click="Button_Click" Foreground="#FFD6DBE9" Background="#FF2C3E5F" BorderBrush="{x:Null}" Height="22"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="312" Margin="70,24,0,0" VerticalAlignment="Top" Width="200" Source="main.png" Stretch="Fill"/>
         <ProgressBar Name="pbStatus" HorizontalAlignment="Left" Height="11" Margin="120,414,0,0" VerticalAlignment="Top" Width="100"/>
-
-
     </Grid>
 </Window>

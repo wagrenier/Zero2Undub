@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 
 namespace Zero2UndubProcess
 {
@@ -18,6 +17,7 @@ namespace Zero2UndubProcess
         private FileInfo JpIsoFile { get; set; }
         private FileInfo UsIsoFile { get; set; }
         private BinaryReader jpIsoData { get; set; }
+        private BinaryReader usIsoDataRead { get; set; }
         private BinaryWriter usIsoData { get; set; }
         private Zero2TocFile _usFileDb { get; set; }
         private Zero2TocFile _jpFileDb { get; set; }
@@ -30,6 +30,7 @@ namespace Zero2UndubProcess
             JpIsoFile = new FileInfo(jpIsoFile);
             jpIsoData = new BinaryReader(File.OpenRead(JpIsoFile.FullName));
             usIsoData = new BinaryWriter(File.OpenWrite(UsIsoFile.FullName));
+            usIsoDataRead = new BinaryReader(File.OpenRead(tempFile.FullName));
             _usFileDb = Zero2TocFile.CreateUsFileDb();
             _jpFileDb = Zero2TocFile.CreateJpFileDb();
         }
@@ -63,7 +64,11 @@ namespace Zero2UndubProcess
                     }
                     else if (currentFileJp.FileExtension == FileExtension.Audio)
                     {
-                        CompressAudioFile(currentFileUs, currentFileJp);
+                        //CompressAudioFile(currentFileUs, currentFileJp);
+                    }
+                    else if (currentFileJp.FileExtension == FileExtension.Video)
+                    {
+                        PssAudioSwitch(currentFileJp, currentFileUs);
                     }
                     else
                     {
@@ -84,6 +89,43 @@ namespace Zero2UndubProcess
             }
 
             IsSuccess = true;
+        }
+
+        private void PssAudioSwitch(Zero2File jp, Zero2File us)
+        {
+            JpSeekFile(jp);
+            var jpBuffer = jpIsoData.ReadBytes((int)jp.Size);
+
+            CreateFile($"{UsIsoFile.DirectoryName}/{jp.FileId}_jp.PSS", jpBuffer);
+
+            usIsoDataRead.BaseStream.Seek(ImgBinStartAddressInIso, SeekOrigin.Begin);
+            usIsoDataRead.BaseStream.Seek(us.BinStartAddress, SeekOrigin.Current);
+            
+            var usBuffer = usIsoDataRead.ReadBytes((int) us.Size);
+            CreateFile($"{UsIsoFile.DirectoryName}/{us.FileId}_us.PSS", usBuffer);
+
+            ExternalProcesses.PssSwitchAudio(jp.FileId, UsIsoFile.DirectoryName);
+
+            var newVideoBuffer = File.ReadAllBytes($"{UsIsoFile.DirectoryName}/{us.FileId}.PSS");
+
+            File.Delete($"{UsIsoFile.DirectoryName}/{us.FileId}.PSS");
+
+            if (newVideoBuffer.Length > us.Size)
+            {
+                Console.WriteLine($"File {us.FileId} is too big to be imported");
+                return;
+            }
+
+            UsSeekFile(us);
+            usIsoData.Write(newVideoBuffer);
+            WriteFileNewSize(us.FileId, newVideoBuffer.Length);
+        }
+        
+        private void CreateFile(string fileName, byte[] buffer)
+        {
+            var file = File.Create(fileName);
+            file.Write(buffer);
+            file.Close();
         }
 
         private void CompressAudioFile(Zero2File usFile, Zero2File jpFile)
