@@ -3,15 +3,12 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Win32;
-using Zero2UndubProcess;
+using Zero2UndubProcess.Importer;
+using Zero2UndubProcess.Options;
 
 namespace Zero2Undub
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private string JpIsoFile { get; set; }
@@ -36,24 +33,24 @@ namespace Zero2Undub
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
-            var importer = new Zero2FileImporter(UsIsoFile, JpIsoFile);
+            var importer = new ZeroFileImporter(JpIsoFile, UsIsoFile, new UndubOptions());
                 
             var task = Task.Factory.StartNew(() =>
             {
-                importer.UndubGame();
+                importer.RestoreGame();
             });
                 
-            while (!importer.IsCompleted)
+            while (!importer.InfoReporterUi.IsCompleted)
             {
-                (sender as BackgroundWorker)?.ReportProgress(100 * importer.UndubbedFiles / (Ps2Constants.NumberFiles));
+                (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / (importer.InfoReporterUi.TotalFiles));
                 Thread.Sleep(100);
             }
             
-            (sender as BackgroundWorker)?.ReportProgress(100 * importer.UndubbedFiles / (Ps2Constants.NumberFiles));
+            (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / (importer.InfoReporterUi.TotalFiles));
 
-            if (!importer.IsSuccess)
+            if (!importer.InfoReporterUi.IsSuccess)
             {
-                MessageBox.Show($"The program failed with the following message: {importer.ErrorMessage}", "PS2 Fatal Frame 2 Undubber");
+                MessageBox.Show($"The program failed with the following message: {importer.InfoReporterUi.ErrorMessage}", "PS2 Fatal Frame 2 Undubber");
                 return;
             }
             
