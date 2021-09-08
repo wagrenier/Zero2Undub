@@ -26,9 +26,9 @@ namespace Zero2UndubProcess.Iso
             var newFileSize = buffer.Length;
             
             // Reimplement Sector Check For Additional Space
-            if (newFileSize > (int) target.Size)
+            if (newFileSize > (int) target.Size && target.Type != FileType.AUDIO_HEADER)
             {
-                Console.WriteLine("big");
+                Console.WriteLine($"Cannot undub file {target.FileId} of type {target.Type}");
                 return;
             }
 

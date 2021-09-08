@@ -12,14 +12,22 @@ namespace Zero2UndubProcess.Iso
         private readonly IsoReader OriginIsoReader;
         private readonly IsoReader TargetIsoReader;
         private readonly IsoWriter TargetIsoWriter;
-        private readonly RegionHandler IsoRegionHandler;
+        public RegionHandler IsoRegionHandler { get; private set; }
         private readonly string Folder;
 
-        public IsoHandler(string originFile, string targetFile, RegionHandler regionHandler)
+        public IsoHandler(string originFile, string targetFile)
         {
-            IsoRegionHandler = regionHandler;
             var originIso = new FileInfo(originFile);
             var targetIso = new FileInfo(targetFile);
+            
+            IsoRegionHandler = new RegionHandler(originIso, targetIso);
+
+            if (IsoRegionHandler.ShouldSwitch)
+            {
+                var temp = originIso;
+                originIso = targetIso;
+                targetIso = temp;
+            }
 
             Folder = targetIso.DirectoryName;
 
@@ -27,11 +35,11 @@ namespace Zero2UndubProcess.Iso
             
             var targetIsoInfo = new FileInfo($"{targetIso.DirectoryName}/pz2_redux.iso");
 
-            OriginIsoReader = new IsoReader(originIso, regionHandler.OriginRegionInfo);
+            OriginIsoReader = new IsoReader(originIso, IsoRegionHandler.OriginRegionInfo);
 
-            TargetIsoReader = new IsoReader(targetIso, regionHandler.TargetRegionInfo);
+            TargetIsoReader = new IsoReader(targetIso, IsoRegionHandler.TargetRegionInfo);
 
-            TargetIsoWriter = new IsoWriter(targetIsoInfo, regionHandler.TargetRegionInfo);
+            TargetIsoWriter = new IsoWriter(targetIsoInfo, IsoRegionHandler.TargetRegionInfo);
         }
 
         public void Close()
@@ -78,9 +86,11 @@ namespace Zero2UndubProcess.Iso
 
             var compressedAudioContent = ExternalProcess.MfAudioCompress(origin, originHeaderFile.AudioHeader, newFrequency, Folder);
             
+            File.Delete($"{Folder}/{origin.FileId}.str");
+            
             if (compressedAudioContent == null || target.Size < compressedAudioContent.Length)
             {
-                File.Delete($"{Folder}/{origin.FileId}.str");
+                Console.WriteLine($"Cannot undub file {target.FileId} of type {target.Type}");
                 return;
             }
             
@@ -88,8 +98,6 @@ namespace Zero2UndubProcess.Iso
             TargetIsoWriter.OverwriteFile(originHeaderFile, targetHeaderFile, GetFileContentOrigin(originHeaderFile));
             
             TargetIsoWriter.WriteAudioHeader(originHeaderFile, targetHeaderFile, newFrequency);
-            
-            File.Delete($"{Folder}/{origin.FileId}.str");
         }
 
         private void ExtractAudioFile(ZeroFile origin)

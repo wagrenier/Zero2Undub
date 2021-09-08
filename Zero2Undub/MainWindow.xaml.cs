@@ -11,13 +11,25 @@ namespace Zero2Undub
 {
     public partial class MainWindow : Window
     {
+        private const string WindowName = "PS2 Fatal Frame 2 Undubber";
         private string JpIsoFile { get; set; }
         private string UsIsoFile { get; set; }
         private bool IsUndubLaunched { get; set; } = false;
+        private UndubOptions Options { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            Options = new UndubOptions
+            {
+                CompressAssets = false
+            };
+        }
+        
+        private void CbCompressAssetsChecked(object sender, RoutedEventArgs e)
+        {
+            Options.CompressAssets = CbCompressAssets.IsChecked == true;
         }
 
         private void UndubGame(object sender, DoWorkEventArgs e)
@@ -25,11 +37,11 @@ namespace Zero2Undub
             
             if (string.IsNullOrWhiteSpace(JpIsoFile) || string.IsNullOrWhiteSpace(UsIsoFile))
             {
-                MessageBox.Show("Please select the files before!", "PS2 Fatal Frame 2 Undubber");
+                MessageBox.Show("Please select the files before!", WindowName);
                 return;
             }
             
-            MessageBox.Show("Copying the US ISO, this may take a few minutes!", "PS2 Fatal Frame 2 Undubber");
+            MessageBox.Show("Copying the US ISO, this may take a few minutes!", WindowName);
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
@@ -50,11 +62,11 @@ namespace Zero2Undub
 
             if (!importer.InfoReporterUi.IsSuccess)
             {
-                MessageBox.Show($"The program failed with the following message: {importer.InfoReporterUi.ErrorMessage}", "PS2 Fatal Frame 2 Undubber");
+                MessageBox.Show($"The program failed with the following message: {importer.InfoReporterUi.ErrorMessage}", WindowName);
                 return;
             }
             
-            MessageBox.Show("All Done! Enjoy the game :D", "PS2 Fatal Frame 2 Undubber");
+            MessageBox.Show("All Done! Enjoy the game :D", WindowName);
         }
 
         private void LaunchUndubbing(object sender, EventArgs e)

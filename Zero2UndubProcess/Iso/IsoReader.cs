@@ -44,11 +44,6 @@ namespace Zero2UndubProcess.Iso
 
             if (fileType == FileType.AUDIO_HEADER)
             {
-                if (fileSize > 0x60)
-                {
-                    Console.WriteLine($"{fileId} has weird long audio header");
-                }
-                
                 audioFileInfo = ReadAudioFileInfo(fileStartAddress);
             }
 
