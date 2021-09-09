@@ -12,8 +12,8 @@ namespace Zero2Undub
     public partial class MainWindow : Window
     {
         private const string WindowName = "PS2 Fatal Frame 2 Undubber";
-        private string JpIsoFile { get; set; }
-        private string UsIsoFile { get; set; }
+        private string OriginIsoFile { get; set; }
+        private string TargetIsoFile { get; set; }
         private bool IsUndubLaunched { get; set; }
         private UndubOptions Options { get; set; }
 
@@ -30,7 +30,7 @@ namespace Zero2Undub
         private void UndubGame(object sender, DoWorkEventArgs e)
         {
             
-            if (string.IsNullOrWhiteSpace(JpIsoFile) || string.IsNullOrWhiteSpace(UsIsoFile))
+            if (string.IsNullOrWhiteSpace(OriginIsoFile) || string.IsNullOrWhiteSpace(TargetIsoFile))
             {
                 MessageBox.Show("Please select the files before!", WindowName);
                 return;
@@ -40,7 +40,7 @@ namespace Zero2Undub
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
-            var importer = new ZeroFileImporter(JpIsoFile, UsIsoFile, Options);
+            var importer = new ZeroFileImporter(OriginIsoFile, TargetIsoFile, Options);
                 
             var task = Task.Factory.StartNew(() =>
             {
@@ -60,7 +60,7 @@ namespace Zero2Undub
                 MessageBox.Show($"The program failed with the following message: {importer.InfoReporterUi.ErrorMessage}", WindowName);
                 return;
             }
-            
+
             MessageBox.Show("All Done! Enjoy the game :D", WindowName);
         }
 
@@ -91,24 +91,24 @@ namespace Zero2Undub
         {
             var usFileDialog = new OpenFileDialog
             {
-                Filter = "iso files (*.iso)|*.iso|All files (*.*)|*.*", 
+                Filter = "iso files (*.iso)|*.iso|All files (*.*)|*.*",
                 Title = "Select the USA ISO"
             };
 
             if (usFileDialog.ShowDialog() == true)
             {
-                UsIsoFile = usFileDialog.FileName;
+                TargetIsoFile = usFileDialog.FileName;
             }
 
             var jpFileDialog = new OpenFileDialog
             {
-                Filter = "iso files (*.iso)|*.iso|All files (*.*)|*.*", 
+                Filter = "iso files (*.iso)|*.iso|All files (*.*)|*.*",
                 Title = "Select the JP ISO"
             };
 
             if (jpFileDialog.ShowDialog() == true)
             {
-                JpIsoFile = jpFileDialog.FileName;
+                OriginIsoFile = jpFileDialog.FileName;
             }
         }
     }

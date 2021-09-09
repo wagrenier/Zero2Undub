@@ -5,10 +5,4 @@
         <RootNamespace>Zero2UndubProcess</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <None Update="MFAudio.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>

@@ -5,19 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Zero2Undub"
         mc:Ignorable="d"
-        Title="PS2 Fatal Frame 2 Undubber" Height="472.25" Width="344.401" ResizeMode="NoResize" Background="#FFD6DBE9" WindowStyle="ToolWindow">
+        Title="PS2 Fatal Frame 2 Undubber" Height="472.25" Width="344.401" ResizeMode="NoResize" Background="#e76940" WindowStyle="ToolWindow">
     <Window.Effect>
         <DropShadowEffect/>
     </Window.Effect>
-    <Grid Margin="0,0,4,5" Background="#FFD6DBE9">
+    <Grid Background="#290d0b" HorizontalAlignment="Center" Width="344" Height="462" VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="144*"/>
-            <ColumnDefinition Width="23*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="button" Content="Undub" HorizontalAlignment="Left" Height="20" Margin="38,347,0,0" VerticalAlignment="Top" Width="99" FontSize="10.667" Click="LaunchUndubbing" Background="#FF293955" Foreground="#FFD6DBE9" BorderBrush="{x:Null}"/>
-        <Button x:Name="button1" Content="Select Files" HorizontalAlignment="Left" Margin="198,347,-8.856,0" VerticalAlignment="Top" Width="99" Click="Button_Click" Foreground="#FFD6DBE9" Background="#FF2C3E5F" BorderBrush="{x:Null}" Height="22"/>
-        <Image x:Name="image" HorizontalAlignment="Left" Height="312" Margin="70,24,0,0" VerticalAlignment="Top" Width="200" Source="main.png" Stretch="Fill"/>
-        <ProgressBar Name="pbStatus" HorizontalAlignment="Left" Height="11" Margin="120,414,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button x:Name="button" Content="Undub" HorizontalAlignment="Left" Height="20" Margin="40,364,0,0" VerticalAlignment="Top" Width="100" FontSize="10.667" Click="LaunchUndubbing" Background="#413438" Foreground="#FFD6DBE9" BorderBrush="{x:Null}"/>
+        <Button x:Name="button1" Content="Select Files" Margin="204,364,40,0" VerticalAlignment="Top" Click="Button_Click" Foreground="#FFD6DBE9" Background="#413438" BorderBrush="{x:Null}" Height="20"/>
+        <Image x:Name="image" HorizontalAlignment="Center" Height="312" VerticalAlignment="Top" Width="200" Source="main.png" Stretch="Fill" Margin="0,22,0,0"/>
+        <ProgressBar Name="pbStatus" HorizontalAlignment="Center" Height="10" Margin="0,419,0,0" VerticalAlignment="Top" Width="180"/>
     </Grid>
 </Window>
