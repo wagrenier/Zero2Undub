@@ -17,7 +17,7 @@ namespace Zero2UndubProcess.Iso
             var targetIso = new FileInfo(targetFile);
             
             IsoRegionHandler = new RegionHandler(originIso, targetIso);
-
+            
             if (IsoRegionHandler.ShouldSwitch)
             {
                 var temp = originIso;
@@ -69,7 +69,7 @@ namespace Zero2UndubProcess.Iso
             _targetIsoWriter.OverwriteFile(origin, target, newVideoContent);
         }
 
-        public void AudioUndub(ZeroFile origin, ZeroFile target)
+        public void AppendFile(ZeroFile origin, ZeroFile target)
         {
             var originHeaderFile = OriginGetFile(origin.FileId - 1);
             var targetHeaderFile = TargetGetFile(target.FileId - 1);

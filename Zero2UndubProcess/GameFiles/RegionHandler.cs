@@ -17,6 +17,7 @@ namespace Zero2UndubProcess.GameFiles
             _originGameRegion = GetGameRegionFromTitleId(origin);
             _targetGameRegion = GetGameRegionFromTitleId(target);
 
+            /*
             if (_targetGameRegion == GameRegions.Japan)
             {
                 ShouldSwitch = true;
@@ -25,6 +26,7 @@ namespace Zero2UndubProcess.GameFiles
                 _targetGameRegion = _originGameRegion;
                 _originGameRegion = temp;
             }
+            */
 
             OriginRegionInfo = GetRegionInfoFromGameRegion(_originGameRegion);
 
@@ -36,32 +38,32 @@ namespace Zero2UndubProcess.GameFiles
             return gameRegion switch
             {
                 GameRegions.EU => new RegionInfo
-                    {
-                        FileArchiveStartAddress = GameRegionConstants.EuIsoConstants.FileArchiveStartAddress,
-                        FileTableStartAddress = GameRegionConstants.EuIsoConstants.FileTableStartAddress,
-                        FileTypeTableStartAddress = GameRegionConstants.EuIsoConstants.FileTypeTableStartAddress,
-                        NumberFiles = GameRegionConstants.EuIsoConstants.NumberFiles,
-                        FileArchiveEndAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndAddress,
-                        FileArchiveEndIsoAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndIsoAddress
-                    },
+                {
+                    FileArchiveStartAddress = GameRegionConstants.EuIsoConstants.FileArchiveStartAddress,
+                    FileTableStartAddress = GameRegionConstants.EuIsoConstants.FileTableStartAddress,
+                    FileTypeTableStartAddress = GameRegionConstants.EuIsoConstants.FileTypeTableStartAddress,
+                    NumberFiles = GameRegionConstants.EuIsoConstants.NumberFiles,
+                    FileArchiveEndAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndAddress,
+                    FileArchiveEndIsoAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndIsoAddress
+                },
                 GameRegions.USA => new RegionInfo
-                    {
-                        FileArchiveStartAddress = GameRegionConstants.UsIsoConstants.FileArchiveStartAddress,
-                        FileTableStartAddress = GameRegionConstants.UsIsoConstants.FileTableStartAddress,
-                        FileTypeTableStartAddress = GameRegionConstants.UsIsoConstants.FileTypeTableStartAddress,
-                        NumberFiles = GameRegionConstants.UsIsoConstants.NumberFiles,
-                        FileArchiveEndAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndAddress,
-                        FileArchiveEndIsoAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndIsoAddress
-                    },
+                {
+                    FileArchiveStartAddress = GameRegionConstants.UsIsoConstants.FileArchiveStartAddress,
+                    FileTableStartAddress = GameRegionConstants.UsIsoConstants.FileTableStartAddress,
+                    FileTypeTableStartAddress = GameRegionConstants.UsIsoConstants.FileTypeTableStartAddress,
+                    NumberFiles = GameRegionConstants.UsIsoConstants.NumberFiles,
+                    FileArchiveEndAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndAddress,
+                    FileArchiveEndIsoAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndIsoAddress
+                },
                 GameRegions.Japan => new RegionInfo
-                    {
-                        FileArchiveStartAddress = GameRegionConstants.JpIsoConstants.FileArchiveStartAddress,
-                        FileTableStartAddress = GameRegionConstants.JpIsoConstants.FileTableStartAddress,
-                        FileTypeTableStartAddress = GameRegionConstants.JpIsoConstants.FileTypeTableStartAddress,
-                        NumberFiles = GameRegionConstants.JpIsoConstants.NumberFiles,
-                        FileArchiveEndAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndAddress,
-                        FileArchiveEndIsoAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndIsoAddress
-                    },
+                {
+                    FileArchiveStartAddress = GameRegionConstants.JpIsoConstants.FileArchiveStartAddress,
+                    FileTableStartAddress = GameRegionConstants.JpIsoConstants.FileTableStartAddress,
+                    FileTypeTableStartAddress = GameRegionConstants.JpIsoConstants.FileTypeTableStartAddress,
+                    NumberFiles = GameRegionConstants.JpIsoConstants.NumberFiles,
+                    FileArchiveEndAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndAddress,
+                    FileArchiveEndIsoAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndIsoAddress
+                },
                 GameRegions.UNKNOWN => throw new Exception("Unknown game region."),
                 _=> throw new Exception("Unknown game region.")
             };

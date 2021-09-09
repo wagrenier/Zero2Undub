@@ -37,6 +37,12 @@ namespace Zero2UndubProcess.Importer
                     var targetFile = _isoHandler.TargetGetFile(i);
                     var originFile = _isoHandler.OriginGetFile(i);
 
+                    // Check for splash screen logo
+                    if (targetFile.FileId == 3)
+                    {
+                        
+                    }
+
                     if (targetFile.Type != FileType.VIDEO && targetFile.Type != FileType.AUDIO)
                     {
                         continue;
@@ -57,7 +63,7 @@ namespace Zero2UndubProcess.Importer
                     } 
                     else if (targetFile.Type == FileType.AUDIO)
                     {
-                        _isoHandler.AudioUndub(originFile, targetFile);
+                        _isoHandler.AppendFile(originFile, targetFile);
                     }
                     else if (targetFile.Type == FileType.VIDEO)
                     {

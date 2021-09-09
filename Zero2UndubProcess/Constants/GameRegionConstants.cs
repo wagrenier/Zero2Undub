@@ -12,7 +12,7 @@ namespace Zero2UndubProcess.Constants
             public const long FileArchiveEndAddress = 0x9168B000;
             public const long FileArchiveEndIsoAddress = 0xC23CB000;
         }
-        
+
         public static class UsIsoConstants
         {
             public const string TitleId = "SLUS_207.66";
@@ -31,8 +31,8 @@ namespace Zero2UndubProcess.Constants
             public const long FileTableStartAddress = 0x002F85F8;
             public const long FileTypeTableStartAddress = 0x304B00;
             public const long FileArchiveStartAddress = 0x30D40000;
-            public const long FileArchiveEndAddress = 0x9168B000;
-            public const long FileArchiveEndIsoAddress = 0xC23CB000;
+            public const long FileArchiveEndAddress = 0x91566000;
+            public const long FileArchiveEndIsoAddress = 0xC22A6000;
         }
     }
 }

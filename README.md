@@ -3,6 +3,8 @@
 ![Downloads](https://img.shields.io/github/downloads/wagrenier/zero2undub/total)
 ![Push Since Last Release](https://img.shields.io/github/commits-since/wagrenier/zero2undub/latest)
 
+![](docs/title_alt_512x512.png)
+
 ## Undub project for Fatal Frame 2 PS2 (Project Zero 2零紅い蝶)
 
 Includes:
