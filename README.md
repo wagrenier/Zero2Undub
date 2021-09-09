@@ -7,8 +7,8 @@
 
 Includes:
 * All assets that are smaller or equal size in the JP version will be undubbed
-* Compressed audio for larger audio files
-* All FMV are undubbed
+* Audio files that are larger are appended at the end of the archive file
+* All FMV are undubbed, but some will retain the english text/logo
 
 Next version:
 * New more accurate subtitle (?)
