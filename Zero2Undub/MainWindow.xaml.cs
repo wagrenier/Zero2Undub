@@ -14,7 +14,7 @@ namespace Zero2Undub
         private const string WindowName = "PS2 Fatal Frame 2 Undubber";
         private string JpIsoFile { get; set; }
         private string UsIsoFile { get; set; }
-        private bool IsUndubLaunched { get; set; } = false;
+        private bool IsUndubLaunched { get; set; }
         private UndubOptions Options { get; set; }
 
         public MainWindow()
@@ -25,11 +25,6 @@ namespace Zero2Undub
             {
                 CompressAssets = false
             };
-        }
-        
-        private void CbCompressAssetsChecked(object sender, RoutedEventArgs e)
-        {
-            Options.CompressAssets = CbCompressAssets.IsChecked == true;
         }
 
         private void UndubGame(object sender, DoWorkEventArgs e)
@@ -45,7 +40,7 @@ namespace Zero2Undub
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
-            var importer = new ZeroFileImporter(JpIsoFile, UsIsoFile, new UndubOptions());
+            var importer = new ZeroFileImporter(JpIsoFile, UsIsoFile, Options);
                 
             var task = Task.Factory.StartNew(() =>
             {
@@ -54,11 +49,11 @@ namespace Zero2Undub
                 
             while (!importer.InfoReporterUi.IsCompleted)
             {
-                (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / (importer.InfoReporterUi.TotalFiles));
+                (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / importer.InfoReporterUi.TotalFiles);
                 Thread.Sleep(100);
             }
             
-            (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / (importer.InfoReporterUi.TotalFiles));
+            (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / importer.InfoReporterUi.TotalFiles);
 
             if (!importer.InfoReporterUi.IsSuccess)
             {

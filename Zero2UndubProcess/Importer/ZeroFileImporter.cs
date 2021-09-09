@@ -9,20 +9,20 @@ namespace Zero2UndubProcess.Importer
     public sealed class ZeroFileImporter
     {
         public InfoReporter InfoReporterUi { get; private set; }
-        private readonly IsoHandler IsoHandler;
-        private readonly UndubOptions UndubOptions;
+        private readonly IsoHandler _isoHandler;
+        private readonly UndubOptions _undubOptions;
 
         public ZeroFileImporter(string originFile, string targetFile, UndubOptions options)
         {
-            UndubOptions = options;
+            _undubOptions = options;
 
-            IsoHandler = new IsoHandler(originFile, targetFile);
+            _isoHandler = new IsoHandler(originFile, targetFile);
             
             InfoReporterUi = new InfoReporter
             {
                  IsCompleted = false,
                  IsSuccess = false,
-                 TotalFiles = IsoHandler.IsoRegionHandler.TargetRegionInfo.NumberFiles,
+                 TotalFiles = _isoHandler.IsoRegionHandler.TargetRegionInfo.NumberFiles,
                  FilesCompleted = 0
             };
         }
@@ -31,11 +31,11 @@ namespace Zero2UndubProcess.Importer
         {
             try
             {
-                for (var i = 0; i < IsoHandler.IsoRegionHandler.TargetRegionInfo.NumberFiles; i++)
+                for (var i = 0; i < _isoHandler.IsoRegionHandler.TargetRegionInfo.NumberFiles; i++)
                 {
                     InfoReporterUi.FilesCompleted += 1;
-                    var targetFile = IsoHandler.TargetGetFile(i);
-                    var originFile = IsoHandler.OriginGetFile(i);
+                    var targetFile = _isoHandler.TargetGetFile(i);
+                    var originFile = _isoHandler.OriginGetFile(i);
 
                     if (targetFile.Type != FileType.VIDEO && targetFile.Type != FileType.AUDIO)
                     {
@@ -44,24 +44,24 @@ namespace Zero2UndubProcess.Importer
 
                     if (originFile.Size <= targetFile.Size)
                     {
-                        IsoHandler.WriteNewFile(originFile, targetFile);
+                        _isoHandler.WriteNewFile(originFile, targetFile);
 
                         if (originFile.Type != FileType.AUDIO)
                         {
                             continue;
                         }
 
-                        targetFile = IsoHandler.TargetGetFile(i - 1);
-                        originFile = IsoHandler.OriginGetFile(i - 1);
-                        IsoHandler.WriteNewFile(originFile, targetFile);
+                        targetFile = _isoHandler.TargetGetFile(i - 1);
+                        originFile = _isoHandler.OriginGetFile(i - 1);
+                        _isoHandler.WriteNewFile(originFile, targetFile);
                     } 
-                    else if (targetFile.Type == FileType.AUDIO && UndubOptions.CompressAssets)
+                    else if (targetFile.Type == FileType.AUDIO)
                     {
-                        IsoHandler.AudioUndub(originFile, targetFile);
+                        _isoHandler.AudioUndub(originFile, targetFile);
                     }
                     else if (targetFile.Type == FileType.VIDEO)
                     {
-                        IsoHandler.LargerVideoUndub(originFile, targetFile);
+                        _isoHandler.LargerVideoUndub(originFile, targetFile);
                     }
                 }
 
@@ -79,7 +79,7 @@ namespace Zero2UndubProcess.Importer
         
         private void CloseFiles()
         {
-            IsoHandler.Close();
+            _isoHandler.Close();
         }
     }
 }

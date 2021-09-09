@@ -10,7 +10,7 @@ namespace Zero2UndubProcess.Iso
         private readonly BinaryWriter _writer;
         private readonly RegionInfo _regionInfo;
 
-        public IsoWriter(FileInfo isoFile, RegionInfo regionInfo)
+        public IsoWriter(FileSystemInfo isoFile, RegionInfo regionInfo)
         {
             _writer = new BinaryWriter(File.OpenWrite(isoFile.FullName));
             _regionInfo = regionInfo;
@@ -21,11 +21,10 @@ namespace Zero2UndubProcess.Iso
             _writer.Close();
         }
 
-        public void OverwriteFile(ZeroFile origin, ZeroFile target, byte[] buffer)
+        public void OverwriteFile(ZeroFile origin, ZeroFile target, byte[] fileContent)
         {
-            var newFileSize = buffer.Length;
+            var newFileSize = fileContent.Length;
             
-            // Reimplement Sector Check For Additional Space
             if (newFileSize > (int) target.Size && target.Type != FileType.AUDIO_HEADER)
             {
                 Console.WriteLine($"Cannot undub file {target.FileId} of type {target.Type}");
@@ -35,46 +34,33 @@ namespace Zero2UndubProcess.Iso
             WriteNewSizeFile(origin, target, newFileSize);
 
             SeekFile(target);
-            _writer.Write(buffer);
+            _writer.Write(fileContent);
         }
-
-        public void WriteAudioHeader(ZeroFile origin, ZeroFile target, int frequency)
+        
+        public void AppendFile(ZeroFile origin, ZeroFile target, byte[] fileContent)
         {
-            var newAudioPlayback = new byte[] {GetNewAudioPlayback(origin.AudioHeader.PlaybackSpeed)};
+            _writer.BaseStream.Seek(_regionInfo.FileArchiveEndIsoAddress, SeekOrigin.Begin);
+            var startAddress = ((uint) (_regionInfo.FileArchiveEndAddress / Ps2Constants.SectorSize) << 2) + 2;
             
-            WriteAudioValueAtOffset(target, 0x4, BitConverter.GetBytes(origin.AudioHeader.Offset));
-            WriteAudioValueAtOffset(target, 0x20, BitConverter.GetBytes(frequency));
-            WriteAudioValueAtOffset(target, 0x29, newAudioPlayback);
+            _writer.Write(fileContent);
+            
+            var blankBytes = Ps2Constants.SectorSize - _writer.BaseStream.Position % Ps2Constants.SectorSize;
+            
+            WriteEmptyByte((int) blankBytes);
 
-            if (origin.AudioHeader.Channel == 2)
-            {
-                WriteAudioValueAtOffset(target, 0x14, BitConverter.GetBytes(origin.AudioHeader.Interleave));
-                WriteAudioValueAtOffset(target, 0x3C, BitConverter.GetBytes(frequency));
-                WriteAudioValueAtOffset(target, 0x45, newAudioPlayback);
-            }
+            _regionInfo.FileArchiveEndIsoAddress += fileContent.Length + blankBytes;
+            _regionInfo.FileArchiveEndAddress += fileContent.Length + blankBytes;
+            
+            WriteNewAddressFile(origin, target, startAddress);
         }
-        
-        private byte GetNewAudioPlayback(byte originPlayback)
+
+        private void WriteNewAddressFile(ZeroFile origin, ZeroFile target, uint newStartAddress)
         {
-            return originPlayback switch
-            {
-                0x8 => 0x6, // None
-                0x9 => 0x6, // None
-                0xa => 0x6, // 32000Hz
-                0xb => 0x3,
-                0xc => 0x4,
-                0xd => 0x5,
-                0xe => 0x6, // 44100Hz
-                0xf => 0x7,
-                _ => originPlayback
-            };
-        }
-        
-        private void WriteAudioValueAtOffset(ZeroFile origin, long valueOffset, byte[] content)
-        {
-            SeekFile(origin);
-            _writer.BaseStream.Seek(valueOffset, SeekOrigin.Current);
-            _writer.Write(content);
+            var fileSizeOffset = target.FileId * GameConstants.FileInfoByteSize;
+            
+            SeekFileTableOffset(fileSizeOffset);
+            _writer.Write(newStartAddress);
+            WriteNewSizeFile(origin, target, (int)origin.Size);
         }
 
         private void WriteNewSizeFile(ZeroFile origin, ZeroFile target, int newSize)
@@ -82,10 +68,6 @@ namespace Zero2UndubProcess.Iso
             var fileSizeOffset = target.FileId * GameConstants.FileInfoByteSize + 0x4;
             SeekFileTableOffset(fileSizeOffset);
             _writer.Write((uint) newSize);
-            
-            // TODO: Add code to handle when I rewrite compressed files
-            //_writer.Write(oldFile.Status == FileStatus.FileCompressed ? newFile.SizeUncompressed : newSize);
-            //_writer.Write(oldFile.Status == FileStatus.FileCompressed ? newSize : 0);
         }
         
         private void SeekFileTableOffset(long offset)
@@ -98,6 +80,14 @@ namespace Zero2UndubProcess.Iso
         {
             _writer.BaseStream.Seek(_regionInfo.FileArchiveStartAddress, SeekOrigin.Begin);
             _writer.BaseStream.Seek(zeroFile.Offset, SeekOrigin.Current);
+        }
+
+        private void WriteEmptyByte(int numBlankBytes)
+        {
+            for (var i = 0; i < numBlankBytes; i++)
+            {
+                _writer.Write(0x0);
+            }
         }
     }
 }
