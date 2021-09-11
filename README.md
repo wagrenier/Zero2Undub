@@ -15,7 +15,7 @@ Includes:
 * All FMV are undubbed, but some will retain the english text/logo
 * Over 30 voice clips restored from the JP version
 * All audio in Japanese!
-* *Custom splash screen
+* Custom splash screen
 
 Next version:
 * New more accurate subtitle (?)
