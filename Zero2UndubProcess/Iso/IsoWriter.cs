@@ -36,6 +36,12 @@ namespace Zero2UndubProcess.Iso
             SeekFile(target);
             _writer.Write(fileContent);
         }
+
+        public void AppendCompressedFile(ZeroFile origin, ZeroFile target, byte[] fileContent)
+        {
+            AppendFile(origin, target, fileContent);
+            WriteNewSizeFileCompressed(origin, target, fileContent.Length);
+        }
         
         public void AppendFile(ZeroFile origin, ZeroFile target, byte[] fileContent)
         {
@@ -52,15 +58,20 @@ namespace Zero2UndubProcess.Iso
             _regionInfo.FileArchiveEndAddress += fileContent.Length + blankBytes;
             
             WriteNewAddressFile(origin, target, startAddress);
+            WriteNewSizeFile(origin, target, fileContent.Length);
+        }
+
+        public void PatchBytesAtAbsoluteAddress(long address, byte[] patch)
+        {
+            _writer.BaseStream.Seek(address, SeekOrigin.Begin);
+            _writer.BaseStream.Write(patch);
         }
 
         private void WriteNewAddressFile(ZeroFile origin, ZeroFile target, uint newStartAddress)
         {
             var fileSizeOffset = target.FileId * GameConstants.FileInfoByteSize;
-            
             SeekFileTableOffset(fileSizeOffset);
             _writer.Write(newStartAddress);
-            WriteNewSizeFile(origin, target, (int)origin.Size);
         }
 
         private void WriteNewSizeFile(ZeroFile origin, ZeroFile target, int newSize)
@@ -68,6 +79,13 @@ namespace Zero2UndubProcess.Iso
             var fileSizeOffset = target.FileId * GameConstants.FileInfoByteSize + 0x4;
             SeekFileTableOffset(fileSizeOffset);
             _writer.Write((uint) newSize);
+        }
+        
+        private void WriteNewSizeFileCompressed(ZeroFile origin, ZeroFile target, int newSize)
+        {
+            var fileSizeOffset = target.FileId * GameConstants.FileInfoByteSize + 0x8;
+            SeekFileTableOffset(fileSizeOffset);
+            _writer.Write(newSize);
         }
         
         private void SeekFileTableOffset(long offset)

@@ -1,4 +1,5 @@
 using System.IO;
+using Zero2UndubProcess.Constants;
 using Zero2UndubProcess.GameFiles;
 using Zero2UndubProcess.Pss;
 
@@ -71,12 +72,20 @@ namespace Zero2UndubProcess.Iso
 
         public void AppendFile(ZeroFile origin, ZeroFile target)
         {
-            var originHeaderFile = OriginGetFile(origin.FileId - 1);
-            var targetHeaderFile = TargetGetFile(target.FileId - 1);
-            
-            _targetIsoWriter.AppendFile(origin, target, GetFileContentOrigin(origin));
+            if (target.Type == FileType.AUDIO)
+            {
+                var originHeaderFile = OriginGetFile(origin.FileId - 1);
+                var targetHeaderFile = TargetGetFile(target.FileId - 1);
+                _targetIsoWriter.OverwriteFile(originHeaderFile, targetHeaderFile, GetFileContentOrigin(originHeaderFile));
+            }
 
-            _targetIsoWriter.OverwriteFile(originHeaderFile, targetHeaderFile, GetFileContentOrigin(originHeaderFile));
+            _targetIsoWriter.AppendFile(origin, target, GetFileContentOrigin(origin));
+        }
+
+        public void OverwriteSplashScreen(ZeroFile origin, ZeroFile target)
+        {
+            _targetIsoWriter.AppendCompressedFile(origin, target, SplashScreen.Content);
+            _targetIsoWriter.PatchBytesAtAbsoluteAddress(IsoRegionHandler.TargetRegionInfo.LogoDatOffset, GameConstants.LogoPatch);
         }
 
         private byte[] GetFileContentOrigin(ZeroFile origin)

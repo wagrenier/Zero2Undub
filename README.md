@@ -7,13 +7,19 @@
 
 ## Undub project for Fatal Frame 2 PS2 (Project Zero 2零紅い蝶)
 
+![](docs/splash.gif)
+
 Includes:
 * All assets that are smaller or equal size in the JP version will be undubbed
 * Audio files that are larger are appended at the end of the archive file
 * All FMV are undubbed, but some will retain the english text/logo
+* Over 30 voice clips restored from the JP version
+* All audio in Japanese!
+* *Custom splash screen
 
 Next version:
 * New more accurate subtitle (?)
+* (Coming soon!) EU support
 
 What this programs needs:
 * Your owned copy of Fatal Frame 2 ISO (US)

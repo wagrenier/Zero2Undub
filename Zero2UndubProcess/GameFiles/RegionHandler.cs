@@ -44,7 +44,8 @@ namespace Zero2UndubProcess.GameFiles
                     FileTypeTableStartAddress = GameRegionConstants.EuIsoConstants.FileTypeTableStartAddress,
                     NumberFiles = GameRegionConstants.EuIsoConstants.NumberFiles,
                     FileArchiveEndAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndAddress,
-                    FileArchiveEndIsoAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndIsoAddress
+                    FileArchiveEndIsoAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndIsoAddress,
+                    LogoDatOffset = GameRegionConstants.EuIsoConstants.LogoDatOffset
                 },
                 GameRegions.USA => new RegionInfo
                 {
@@ -53,7 +54,8 @@ namespace Zero2UndubProcess.GameFiles
                     FileTypeTableStartAddress = GameRegionConstants.UsIsoConstants.FileTypeTableStartAddress,
                     NumberFiles = GameRegionConstants.UsIsoConstants.NumberFiles,
                     FileArchiveEndAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndAddress,
-                    FileArchiveEndIsoAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndIsoAddress
+                    FileArchiveEndIsoAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndIsoAddress,
+                    LogoDatOffset = GameRegionConstants.UsIsoConstants.LogoDatOffset
                 },
                 GameRegions.Japan => new RegionInfo
                 {
@@ -62,7 +64,8 @@ namespace Zero2UndubProcess.GameFiles
                     FileTypeTableStartAddress = GameRegionConstants.JpIsoConstants.FileTypeTableStartAddress,
                     NumberFiles = GameRegionConstants.JpIsoConstants.NumberFiles,
                     FileArchiveEndAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndAddress,
-                    FileArchiveEndIsoAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndIsoAddress
+                    FileArchiveEndIsoAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndIsoAddress,
+                    LogoDatOffset = GameRegionConstants.JpIsoConstants.LogoDatOffset
                 },
                 GameRegions.UNKNOWN => throw new Exception("Unknown game region."),
                 _=> throw new Exception("Unknown game region.")
@@ -97,6 +100,7 @@ namespace Zero2UndubProcess.GameFiles
         public long FileTypeTableStartAddress { get; init; }
         public long FileArchiveEndAddress { get; set; }
         public long FileArchiveEndIsoAddress { get; set; }
+        public long LogoDatOffset { get; set; }
         public int NumberFiles { get; init; }
     }
 

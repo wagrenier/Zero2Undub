@@ -5,12 +5,13 @@ namespace Zero2UndubProcess.Constants
         public static class EuIsoConstants
         {
             public const string TitleId = "SLES_523.84";
-            public const int NumberFiles = 0x879;
-            public const long FileTableStartAddress = 0xA63000;
-            public const long FileTypeTableStartAddress = 0x2082D000;
-            public const long FileArchiveStartAddress = 0x30D40000;
-            public const long FileArchiveEndAddress = 0x9168B000;
-            public const long FileArchiveEndIsoAddress = 0xC23CB000;
+            public const int NumberFiles = 0x879; // TODO: Change
+            public const long FileTableStartAddress = 0xA63000; // TODO: Change
+            public const long FileTypeTableStartAddress = 0x2082D000; // TODO: Change
+            public const long FileArchiveStartAddress = 0x493E0000;
+            public const long FileArchiveEndAddress = 0x92A40000;
+            public const long FileArchiveEndIsoAddress = 0xDBE20000;
+            public const long LogoDatOffset = 0x2C4130;
         }
 
         public static class UsIsoConstants
@@ -22,6 +23,7 @@ namespace Zero2UndubProcess.Constants
             public const long FileArchiveStartAddress = 0x30D40000;
             public const long FileArchiveEndAddress = 0x9168B000;
             public const long FileArchiveEndIsoAddress = 0xC23CB000;
+            public const long LogoDatOffset = 0x2C4130;
         }
 
         public static class JpIsoConstants
@@ -33,6 +35,7 @@ namespace Zero2UndubProcess.Constants
             public const long FileArchiveStartAddress = 0x30D40000;
             public const long FileArchiveEndAddress = 0x91566000;
             public const long FileArchiveEndIsoAddress = 0xC22A6000;
+            public const long LogoDatOffset = 0x2C4130;
         }
     }
 }
