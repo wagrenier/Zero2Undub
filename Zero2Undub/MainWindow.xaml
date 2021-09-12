@@ -15,9 +15,9 @@
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="button" Content="Undub" HorizontalAlignment="Left" Height="20" Margin="40,364,0,0" VerticalAlignment="Top" Width="100" FontSize="10.667" Click="LaunchUndubbing" Background="#413438" Foreground="#FFD6DBE9" BorderBrush="{x:Null}"/>
-        <Button x:Name="button1" Content="Select Files" Margin="204,364,40,0" VerticalAlignment="Top" Click="Button_Click" Foreground="#FFD6DBE9" Background="#413438" BorderBrush="{x:Null}" Height="20"/>
+        <Button x:Name="UndubBtn" Content="Undub" HorizontalAlignment="Left" Margin="40,364,0,0" VerticalAlignment="Top" Click="LaunchUndubbing" Style="{StaticResource BntHover}" BorderBrush="{x:Null}"/>
+        <Button x:Name="FileBtn" Content="Select Files" Margin="204,364,40,0" VerticalAlignment="Top" Click="Button_Click" Style="{StaticResource BntHover}" BorderBrush="{x:Null}"/>
         <Image x:Name="image" HorizontalAlignment="Center" Height="312" VerticalAlignment="Top" Width="200" Source="main.png" Stretch="Fill" Margin="0,22,0,0"/>
-        <ProgressBar Name="pbStatus" HorizontalAlignment="Center" Height="10" Margin="0,419,0,0" VerticalAlignment="Top" Width="180"/>
+        <ProgressBar Name="pbStatus" HorizontalAlignment="Center" Height="10" Margin="0,428,0,0" VerticalAlignment="Top" Width="250"/>
     </Grid>
 </Window>
