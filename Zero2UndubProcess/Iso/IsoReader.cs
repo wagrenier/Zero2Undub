@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using Zero2UndubProcess.Audio;
 using Zero2UndubProcess.Constants;
 using Zero2UndubProcess.GameFiles;
 
@@ -40,13 +38,6 @@ namespace Zero2UndubProcess.Iso
             
             var fileType = ReadFileTypeTableOffset(fileId);
 
-            AudioFileInfo audioFileInfo = null;
-
-            if (fileType == FileType.AUDIO_HEADER)
-            {
-                audioFileInfo = ReadAudioFileInfo(fileStartAddress);
-            }
-
             return new ZeroFile
             {
                 FileId = fileId,
@@ -56,7 +47,6 @@ namespace Zero2UndubProcess.Iso
                 SizeCompress = fileSizeCompressed,
                 Status = fileStatus,
                 Type = fileType,
-                AudioHeader = audioFileInfo
             };
         }
 
@@ -66,35 +56,6 @@ namespace Zero2UndubProcess.Iso
             return _reader.ReadBytes((int) zeroFile.Size);
         }
 
-        private AudioFileInfo ReadAudioFileInfo(long audioHeaderFileAddress)
-        {
-            var headerOffset = ReadAudioValueAtOffset(audioHeaderFileAddress, 0x4);
-            var numChannel = ReadAudioValueAtOffset(audioHeaderFileAddress, 0x8);
-            var interleave = ReadAudioValueAtOffset(audioHeaderFileAddress, 0x14);
-            var audioFrequency = ReadAudioValueAtOffset(audioHeaderFileAddress, 0x20);
-            
-            // Read weird header value
-            SeekFile(audioHeaderFileAddress);
-            _reader.BaseStream.Seek(0x29, SeekOrigin.Current);
-            var playbackSpeed = _reader.ReadByte();
-
-            return new AudioFileInfo
-            {
-                Channel = numChannel,
-                Frequency = audioFrequency,
-                Interleave = interleave,
-                Offset = headerOffset,
-                PlaybackSpeed = playbackSpeed
-            };
-        }
-
-        private int ReadAudioValueAtOffset(long audioHeaderFileAddress, long valueOffset)
-        {
-            SeekFile(audioHeaderFileAddress);
-            _reader.BaseStream.Seek(valueOffset, SeekOrigin.Current);
-            return (int) _reader.ReadUInt32();
-        }
-        
         private void SeekFileTableOffset(long offset)
         {
             _reader.BaseStream.Seek(_regionInfo.FileTableStartAddress, SeekOrigin.Begin);
@@ -116,12 +77,6 @@ namespace Zero2UndubProcess.Iso
                 0xF => FileType.VIDEO,
                 _ => FileType.UNKNOWN
             };
-        }
-        
-        private void SeekFile(long fileAddress)
-        {
-            _reader.BaseStream.Seek(_regionInfo.FileArchiveStartAddress, SeekOrigin.Begin);
-            _reader.BaseStream.Seek(fileAddress, SeekOrigin.Current);
         }
 
         private void SeekFile(ZeroFile zeroFile)

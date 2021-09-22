@@ -60,7 +60,7 @@ namespace Zero2UndubProcess.Iso
             return _originIsoReader.ExtractFileInfo(fileId);
         }
         
-        public void LargerVideoUndub(ZeroFile origin, ZeroFile target)
+        public void VideoAudioSwitch(ZeroFile origin, ZeroFile target)
         {
             var originVideoContent = GetFileContentOrigin(origin);
             var targetVideoContent = GetFileContentTarget(target);
@@ -74,9 +74,7 @@ namespace Zero2UndubProcess.Iso
         {
             if (target.Type == FileType.AUDIO)
             {
-                var originHeaderFile = OriginGetFile(origin.FileId - 1);
-                var targetHeaderFile = TargetGetFile(target.FileId - 1);
-                _targetIsoWriter.OverwriteFile(originHeaderFile, targetHeaderFile, GetFileContentOrigin(originHeaderFile));
+                
             }
 
             _targetIsoWriter.AppendFile(origin, target, GetFileContentOrigin(origin));

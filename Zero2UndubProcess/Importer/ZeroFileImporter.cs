@@ -1,7 +1,6 @@
 using System;
 using Zero2UndubProcess.GameFiles;
 using Zero2UndubProcess.Iso;
-using Zero2UndubProcess.Options;
 using Zero2UndubProcess.Reporter;
 
 namespace Zero2UndubProcess.Importer
@@ -10,12 +9,9 @@ namespace Zero2UndubProcess.Importer
     {
         public InfoReporter InfoReporterUi { get; private set; }
         private readonly IsoHandler _isoHandler;
-        private readonly UndubOptions _undubOptions;
 
-        public ZeroFileImporter(string originFile, string targetFile, UndubOptions options)
+        public ZeroFileImporter(string originFile, string targetFile)
         {
-            _undubOptions = options;
-
             _isoHandler = new IsoHandler(originFile, targetFile);
             
             InfoReporterUi = new InfoReporter
@@ -56,18 +52,17 @@ namespace Zero2UndubProcess.Importer
                         {
                             continue;
                         }
-
-                        targetFile = _isoHandler.TargetGetFile(i - 1);
-                        originFile = _isoHandler.OriginGetFile(i - 1);
-                        _isoHandler.WriteNewFile(originFile, targetFile);
+                        
+                        HandleAudioFile(originFile, targetFile);
                     } 
                     else if (targetFile.Type == FileType.AUDIO)
                     {
+                        HandleAudioFile(originFile, targetFile);
                         _isoHandler.AppendFile(originFile, targetFile);
                     }
                     else if (targetFile.Type == FileType.VIDEO)
                     {
-                        _isoHandler.LargerVideoUndub(originFile, targetFile);
+                        _isoHandler.VideoAudioSwitch(originFile, targetFile);
                     }
                 }
 
@@ -81,6 +76,13 @@ namespace Zero2UndubProcess.Importer
 
             InfoReporterUi.IsCompleted = true;
             CloseFiles();
+        }
+
+        private void HandleAudioFile(ZeroFile origin, ZeroFile target)
+        {
+            var originHeaderFile = _isoHandler.OriginGetFile(origin.FileId - 1);
+            var targetHeaderFile = _isoHandler.TargetGetFile(target.FileId - 1);
+            _isoHandler.WriteNewFile(originHeaderFile, targetHeaderFile);
         }
         
         private void CloseFiles()

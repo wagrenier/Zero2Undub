@@ -1,5 +1,3 @@
-using Zero2UndubProcess.Audio;
-
 namespace Zero2UndubProcess.GameFiles
 {
     public class ZeroFile
@@ -11,6 +9,5 @@ namespace Zero2UndubProcess.GameFiles
         public long SizeCompress { get; init; }
         public FileStatus Status { get; init; }
         public FileType Type { get; init; }
-        public AudioFileInfo AudioHeader { get; init; }
     }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using Zero2UndubProcess.Importer;
-using Zero2UndubProcess.Options;
 
 namespace Zero2Undub
 {
@@ -15,16 +14,10 @@ namespace Zero2Undub
         private string OriginIsoFile { get; set; }
         private string TargetIsoFile { get; set; }
         private bool IsUndubLaunched { get; set; }
-        private UndubOptions Options { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-
-            Options = new UndubOptions
-            {
-                CompressAssets = false
-            };
         }
 
         private void UndubGame(object sender, DoWorkEventArgs e)
@@ -36,11 +29,11 @@ namespace Zero2Undub
                 return;
             }
             
-            MessageBox.Show("Copying the US ISO, this may take a few minutes!", WindowName);
+            MessageBox.Show("Copying the US or EU ISO, this may take a few minutes!", WindowName);
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
-            var importer = new ZeroFileImporter(OriginIsoFile, TargetIsoFile, Options);
+            var importer = new ZeroFileImporter(OriginIsoFile, TargetIsoFile);
                 
             var task = Task.Factory.StartNew(() =>
             {
@@ -53,7 +46,7 @@ namespace Zero2Undub
                 Thread.Sleep(100);
             }
             
-            (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / importer.InfoReporterUi.TotalFiles);
+            (sender as BackgroundWorker)?.ReportProgress(100);
 
             if (!importer.InfoReporterUi.IsSuccess)
             {
@@ -92,7 +85,7 @@ namespace Zero2Undub
             var usFileDialog = new OpenFileDialog
             {
                 Filter = "iso files (*.iso)|*.iso|All files (*.*)|*.*",
-                Title = "Select the USA ISO"
+                Title = "Select the USA or EU ISO"
             };
 
             if (usFileDialog.ShowDialog() == true)
