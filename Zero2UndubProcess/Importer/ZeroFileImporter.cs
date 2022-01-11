@@ -66,6 +66,7 @@ namespace Zero2UndubProcess.Importer
                     }
                 }
 
+                _isoHandler.FillIso();
                 InfoReporterUi.IsSuccess = true;
             }
             catch (Exception e)

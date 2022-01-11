@@ -9,7 +9,7 @@ namespace Zero2UndubProcess.Iso
         private readonly BinaryReader _reader;
         private readonly RegionInfo _regionInfo;
 
-        public IsoReader(FileInfo isoFile, RegionInfo regionInfo)
+        public IsoReader(FileSystemInfo isoFile, RegionInfo regionInfo)
         {
             _reader = new BinaryReader(File.OpenRead(isoFile.FullName));
             _regionInfo = regionInfo;
@@ -46,7 +46,7 @@ namespace Zero2UndubProcess.Iso
                 SizeUncompressed = fileSize,
                 SizeCompress = fileSizeCompressed,
                 Status = fileStatus,
-                Type = fileType,
+                Type = fileType
             };
         }
 

@@ -21,6 +21,14 @@ namespace Zero2UndubProcess.Iso
             _writer.Close();
         }
 
+        public void FillIso()
+        {
+            _writer.BaseStream.Seek(0, SeekOrigin.End);
+            var blankBytes = Ps2Constants.SectorSize - _writer.BaseStream.Position % Ps2Constants.SectorSize;
+            
+            WriteEmptyByte((int) blankBytes);
+        }
+
         public void OverwriteFile(ZeroFile origin, ZeroFile target, byte[] fileContent)
         {
             var newFileSize = fileContent.Length;

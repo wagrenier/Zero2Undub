@@ -21,9 +21,7 @@ namespace Zero2UndubProcess.Iso
             
             if (IsoRegionHandler.ShouldSwitch)
             {
-                var temp = originIso;
-                originIso = targetIso;
-                targetIso = temp;
+                (originIso, targetIso) = (targetIso, originIso);
             }
 
             File.Copy(targetIso.FullName, $"{targetIso.DirectoryName}/pz2_redux.iso");
@@ -42,6 +40,11 @@ namespace Zero2UndubProcess.Iso
             _originIsoReader.Close();
             _targetIsoReader.Close();
             _targetIsoWriter.Close();
+        }
+
+        public void FillIso()
+        {
+            _targetIsoWriter.FillIso();
         }
 
         public void WriteNewFile(ZeroFile origin, ZeroFile target)
