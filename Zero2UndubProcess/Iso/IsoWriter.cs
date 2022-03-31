@@ -20,13 +20,15 @@ namespace Zero2UndubProcess.Iso
         {
             _writer.Close();
         }
-
+        
         public void FillIso()
         {
-            _writer.BaseStream.Seek(0, SeekOrigin.End);
-            var blankBytes = Ps2Constants.SectorSize - _writer.BaseStream.Position % Ps2Constants.SectorSize;
-            
-            WriteEmptyByte((int) blankBytes);
+            _writer.Seek(0x0, SeekOrigin.End);
+
+            while (_writer.BaseStream.Position % Ps2Constants.SectorSize != 0)
+            {
+                _writer.Write(0x00);
+            }
         }
 
         public void OverwriteFile(ZeroFile origin, ZeroFile target, byte[] fileContent)

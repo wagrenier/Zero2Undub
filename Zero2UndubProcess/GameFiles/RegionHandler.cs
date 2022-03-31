@@ -16,17 +16,13 @@ namespace Zero2UndubProcess.GameFiles
         {
             _originGameRegion = GetGameRegionFromTitleId(origin);
             _targetGameRegion = GetGameRegionFromTitleId(target);
-
-            /*
+            
             if (_targetGameRegion == GameRegions.Japan)
             {
                 ShouldSwitch = true;
 
-                var temp = _targetGameRegion;
-                _targetGameRegion = _originGameRegion;
-                _originGameRegion = temp;
+                (_targetGameRegion, _originGameRegion) = (_originGameRegion, _targetGameRegion);
             }
-            */
 
             OriginRegionInfo = GetRegionInfoFromGameRegion(_originGameRegion);
 
