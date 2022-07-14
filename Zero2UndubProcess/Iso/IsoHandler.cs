@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Zero2UndubProcess.Constants;
 using Zero2UndubProcess.GameFiles;
@@ -10,6 +11,7 @@ namespace Zero2UndubProcess.Iso
         private readonly IsoReader _originIsoReader;
         private readonly IsoReader _targetIsoReader;
         private readonly IsoWriter _targetIsoWriter;
+        
         public RegionHandler IsoRegionHandler { get; private set; }
 
         public IsoHandler(string originFile, string targetFile)
@@ -24,9 +26,9 @@ namespace Zero2UndubProcess.Iso
                 (originIso, targetIso) = (targetIso, originIso);
             }
 
-            File.Copy(targetIso.FullName, $"{targetIso.DirectoryName}/pz2_redux.iso");
+            File.Copy(targetIso.FullName, $"{targetIso.DirectoryName}/zero2_undub.iso");
             
-            var targetIsoInfo = new FileInfo($"{targetIso.DirectoryName}/pz2_redux.iso");
+            var targetIsoInfo = new FileInfo($"{targetIso.DirectoryName}/zero2_undub.iso");
 
             _originIsoReader = new IsoReader(originIso, IsoRegionHandler.OriginRegionInfo);
 
@@ -75,11 +77,6 @@ namespace Zero2UndubProcess.Iso
 
         public void AppendFile(ZeroFile origin, ZeroFile target)
         {
-            if (target.Type == FileType.AUDIO)
-            {
-                
-            }
-
             _targetIsoWriter.AppendFile(origin, target, GetFileContentOrigin(origin));
         }
 

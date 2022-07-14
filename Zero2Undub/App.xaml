@@ -32,6 +32,19 @@
                     <Setter Property="Foreground" Value="#FFFFFF"/>
                 </Trigger>
             </Style.Triggers>
-        </Style> 
-    </Application.Resources>
+        </Style>
+        <Style TargetType="CheckBox" x:Key="ChkBox">
+            <Setter Property="Background" Value="#413438"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="IsChecked" Value="False"/>
+            
+        </Style>
+</Application.Resources>
 </Application>

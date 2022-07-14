@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
+using Zero2UndubProcess;
 using Zero2UndubProcess.Importer;
 
 namespace Zero2Undub
@@ -14,6 +15,7 @@ namespace Zero2Undub
         private string OriginIsoFile { get; set; }
         private string TargetIsoFile { get; set; }
         private bool IsUndubLaunched { get; set; }
+        private UndubOptions UndubOptions { get; set; } = new UndubOptions();
 
         public MainWindow()
         {
@@ -33,7 +35,7 @@ namespace Zero2Undub
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
-            var importer = new ZeroFileImporter(OriginIsoFile, TargetIsoFile);
+            var importer = new ZeroFileImporter(UndubOptions, OriginIsoFile, TargetIsoFile);
                 
             var task = Task.Factory.StartNew(() =>
             {
@@ -78,6 +80,11 @@ namespace Zero2Undub
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             pbStatus.Value = e.ProgressPercentage;
+        }
+
+        private void CbSafeUndubChecked(object sender, RoutedEventArgs e)
+        {
+            UndubOptions.SafeUndub = safeUndubBtn.IsChecked == true;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

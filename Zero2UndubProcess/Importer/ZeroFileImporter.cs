@@ -8,10 +8,12 @@ namespace Zero2UndubProcess.Importer
     public sealed class ZeroFileImporter
     {
         public InfoReporter InfoReporterUi { get; private set; }
+        private readonly UndubOptions _undubOptions;
         private readonly IsoHandler _isoHandler;
 
-        public ZeroFileImporter(string originFile, string targetFile)
+        public ZeroFileImporter(UndubOptions undubOptions, string originFile, string targetFile)
         {
+            _undubOptions = undubOptions;
             _isoHandler = new IsoHandler(originFile, targetFile);
             
             InfoReporterUi = new InfoReporter
@@ -54,8 +56,8 @@ namespace Zero2UndubProcess.Importer
                         }
                         
                         HandleAudioFile(originFile, targetFile);
-                    } 
-                    else if (targetFile.Type == FileType.AUDIO)
+                    }
+                    else if (targetFile.Type == FileType.AUDIO && !_undubOptions.SafeUndub)
                     {
                         HandleAudioFile(originFile, targetFile);
                         _isoHandler.AppendFile(originFile, targetFile);

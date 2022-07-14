@@ -19,5 +19,6 @@
         <Button x:Name="FileBtn" Content="Select Files" Margin="204,364,40,0" VerticalAlignment="Top" Click="Button_Click" Style="{StaticResource BntHover}" BorderBrush="{x:Null}"/>
         <Image x:Name="image" HorizontalAlignment="Center" Height="312" VerticalAlignment="Top" Width="200" Source="main.png" Stretch="Fill" Margin="0,22,0,0"/>
         <ProgressBar Name="pbStatus" HorizontalAlignment="Center" Height="10" Margin="0,428,0,0" VerticalAlignment="Top" Width="250"/>
+        <CheckBox Name="safeUndubBtn" Content="Safe Undub" Checked="CbSafeUndubChecked" Unchecked="CbSafeUndubChecked" ToolTip="Makes sure the undub will be compatible with real hardware. Might also fix some weird issues on PCSX2. However, not all dialogues will be in japanese and the missing audio content will not be restored. Recommended if running on real hardware." Style="{StaticResource ChkBox}" Margin="0,339,0,0" Width="100" Height="15"/>
     </Grid>
 </Window>
