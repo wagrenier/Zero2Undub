@@ -15,7 +15,8 @@ namespace Zero2UndubProcess.GameFiles
         UNKNOWN,
         AUDIO,
         AUDIO_HEADER,
-        VIDEO
+        VIDEO,
+        SOUNDEFFECT
     }
 
     public static class FileEvaluations

@@ -24,6 +24,17 @@ namespace Zero2UndubProcess.GameFiles
                 (_targetGameRegion, _originGameRegion) = (_originGameRegion, _targetGameRegion);
             }
 
+            if (_targetGameRegion == _originGameRegion)
+            {
+                throw new Exception(
+                    $"You selected ISO for {_targetGameRegion} and {_originGameRegion}. Make sure to select US ISO then JP ISO.");
+            }
+
+            if (_targetGameRegion == GameRegions.EU)
+            {
+                throw new Exception($"Sorry the EU version is not yet supported by this version!");
+            }
+
             OriginRegionInfo = GetRegionInfoFromGameRegion(_originGameRegion);
 
             TargetRegionInfo = GetRegionInfoFromGameRegion(_targetGameRegion);
@@ -74,18 +85,33 @@ namespace Zero2UndubProcess.GameFiles
 
             binaryReader.BaseStream.Position = Ps2Constants.GameTitleIdAddress;
             var titleIdBytes = binaryReader.ReadBytes(Ps2Constants.GameTitleIdLength);
-            
-            binaryReader.Close();
-            
+
             var titleId = System.Text.Encoding.UTF8.GetString(titleIdBytes);
 
-            return titleId switch
+            GameRegions gameRegion;
+            
+            switch (titleId)
             {
-                GameRegionConstants.EuIsoConstants.TitleId => GameRegions.EU,
-                GameRegionConstants.JpIsoConstants.TitleId => GameRegions.Japan,
-                GameRegionConstants.UsIsoConstants.TitleId => GameRegions.USA,
-                _ => GameRegions.UNKNOWN
-            };
+                case GameRegionConstants.JpIsoConstants.TitleId:
+                    gameRegion = GameRegions.Japan;
+                    break;
+                case GameRegionConstants.UsIsoConstants.TitleId:
+                    gameRegion = GameRegions.USA;
+                    break;
+                default:
+                    binaryReader.BaseStream.Position = Ps2Constants.EuGameTitleIdAddress;
+                    titleIdBytes = binaryReader.ReadBytes(Ps2Constants.GameTitleIdLength);
+                    titleId = System.Text.Encoding.UTF8.GetString(titleIdBytes);
+
+                    gameRegion = titleId == GameRegionConstants.EuIsoConstants.TitleId
+                        ? GameRegions.EU
+                        : GameRegions.UNKNOWN;
+                    break;
+            }
+            
+            binaryReader.Close();
+
+            return gameRegion;
         }
     }
 

@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Text;
 using Zero2UndubProcess.GameFiles;
 using Zero2UndubProcess.Iso;
 using Zero2UndubProcess.Reporter;
@@ -15,7 +17,7 @@ namespace Zero2UndubProcess.Importer
         {
             _undubOptions = undubOptions;
             _isoHandler = new IsoHandler(originFile, targetFile);
-            
+
             InfoReporterUi = new InfoReporter
             {
                  IsCompleted = false,
@@ -39,6 +41,7 @@ namespace Zero2UndubProcess.Importer
                     if (targetFile.FileId == 2)
                     {
                         _isoHandler.OverwriteSplashScreen(originFile, targetFile);
+                        continue;
                     }
 
                     if (targetFile.Type != FileType.VIDEO && targetFile.Type != FileType.AUDIO)
@@ -54,7 +57,7 @@ namespace Zero2UndubProcess.Importer
                         {
                             continue;
                         }
-                        
+
                         HandleAudioFile(originFile, targetFile);
                     }
                     else if (targetFile.Type == FileType.AUDIO && !_undubOptions.SafeUndub)
@@ -85,9 +88,15 @@ namespace Zero2UndubProcess.Importer
         {
             var originHeaderFile = _isoHandler.OriginGetFile(origin.FileId - 1);
             var targetHeaderFile = _isoHandler.TargetGetFile(target.FileId - 1);
+
+            if (targetHeaderFile.Size > originHeaderFile.Size || originHeaderFile.Status is FileStatus.Unknown or FileStatus.NoFile || originHeaderFile.Type != FileType.AUDIO_HEADER || targetHeaderFile.Type != FileType.AUDIO_HEADER)
+            {
+                return;
+            }
+
             _isoHandler.WriteNewFile(originHeaderFile, targetHeaderFile);
         }
-        
+
         private void CloseFiles()
         {
             _isoHandler.Close();

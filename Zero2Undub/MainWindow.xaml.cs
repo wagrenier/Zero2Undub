@@ -35,28 +35,36 @@ namespace Zero2Undub
             IsUndubLaunched = true;
                 
             (sender as BackgroundWorker)?.ReportProgress(10);
-            var importer = new ZeroFileImporter(UndubOptions, OriginIsoFile, TargetIsoFile);
-                
-            var task = Task.Factory.StartNew(() =>
-            {
-                importer.RestoreGame();
-            });
-                
-            while (!importer.InfoReporterUi.IsCompleted)
-            {
-                (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted / importer.InfoReporterUi.TotalFiles);
-                Thread.Sleep(100);
-            }
-            
-            (sender as BackgroundWorker)?.ReportProgress(100);
 
-            if (!importer.InfoReporterUi.IsSuccess)
+            try
             {
-                MessageBox.Show($"The program failed with the following message: {importer.InfoReporterUi.ErrorMessage}", WindowName);
-                return;
-            }
+                var importer = new ZeroFileImporter(UndubOptions, OriginIsoFile, TargetIsoFile);
 
-            MessageBox.Show("All Done! Enjoy the game :D", WindowName);
+                var task = Task.Factory.StartNew(() => { importer.RestoreGame(); });
+
+                while (!importer.InfoReporterUi.IsCompleted)
+                {
+                    (sender as BackgroundWorker)?.ReportProgress(100 * importer.InfoReporterUi.FilesCompleted /
+                                                                 importer.InfoReporterUi.TotalFiles);
+                    Thread.Sleep(100);
+                }
+
+                (sender as BackgroundWorker)?.ReportProgress(100);
+
+                if (!importer.InfoReporterUi.IsSuccess)
+                {
+                    MessageBox.Show(
+                        $"The program failed with the following message: {importer.InfoReporterUi.ErrorMessage}",
+                        WindowName);
+                    return;
+                }
+
+                MessageBox.Show("All Done! Enjoy the game :D", WindowName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void LaunchUndubbing(object sender, EventArgs e)

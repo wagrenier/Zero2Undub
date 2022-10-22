@@ -73,7 +73,7 @@ namespace Zero2UndubProcess.Iso
             {
                 0xC => FileType.AUDIO_HEADER,
                 0xD => FileType.AUDIO,
-                0xE => FileType.AUDIO,
+                0xE => FileType.SOUNDEFFECT,
                 0xF => FileType.VIDEO,
                 _ => FileType.UNKNOWN
             };
