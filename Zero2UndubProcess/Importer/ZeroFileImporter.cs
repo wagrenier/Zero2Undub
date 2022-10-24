@@ -1,6 +1,5 @@
 using System;
-using System.IO;
-using System.Text;
+using Zero2UndubProcess.Constants;
 using Zero2UndubProcess.GameFiles;
 using Zero2UndubProcess.Iso;
 using Zero2UndubProcess.Reporter;
@@ -44,7 +43,7 @@ namespace Zero2UndubProcess.Importer
                         continue;
                     }
 
-                    if (targetFile.Type != FileType.VIDEO && targetFile.Type != FileType.AUDIO)
+                    if (targetFile.Type != FileType.VIDEO && targetFile.Type != FileType.AUDIO && targetFile.Type != FileType.SOUNDEFFECT)
                     {
                         continue;
                     }
@@ -53,14 +52,15 @@ namespace Zero2UndubProcess.Importer
                     {
                         _isoHandler.WriteNewFile(originFile, targetFile);
 
-                        if (originFile.Type != FileType.AUDIO)
+                        if (originFile.Type != FileType.AUDIO || originFile.Type != FileType.SOUNDEFFECT)
                         {
                             continue;
                         }
 
                         HandleAudioFile(originFile, targetFile);
                     }
-                    else if (targetFile.Type == FileType.AUDIO && !_undubOptions.SafeUndub)
+                    else if (targetFile.Type is FileType.AUDIO or FileType.SOUNDEFFECT
+                             && !_undubOptions.SafeUndub)
                     {
                         HandleAudioFile(originFile, targetFile);
                         _isoHandler.AppendFile(originFile, targetFile);
@@ -89,9 +89,20 @@ namespace Zero2UndubProcess.Importer
             var originHeaderFile = _isoHandler.OriginGetFile(origin.FileId - 1);
             var targetHeaderFile = _isoHandler.TargetGetFile(target.FileId - 1);
 
-            if (targetHeaderFile.Size > originHeaderFile.Size || originHeaderFile.Status is FileStatus.Unknown or FileStatus.NoFile || originHeaderFile.Type != FileType.AUDIO_HEADER || targetHeaderFile.Type != FileType.AUDIO_HEADER)
+            if (originHeaderFile.Status is FileStatus.Unknown or FileStatus.NoFile
+                || originHeaderFile.Type != FileType.AUDIO_HEADER
+                || targetHeaderFile.Type != FileType.AUDIO_HEADER)
             {
                 return;
+            }
+
+            if (targetHeaderFile.Size > originHeaderFile.Size)
+            {
+                // Makes sure the entire sector of the file is overwritten
+                // whenever the source audio header is smaller than the target.
+                // This is for handling the edge case of file 0x3133 that
+                // caused the game to crash
+                originHeaderFile.Size = Ps2Constants.SectorSize - 1;
             }
 
             _isoHandler.WriteNewFile(originHeaderFile, targetHeaderFile);
