@@ -52,7 +52,7 @@ namespace Zero2UndubProcess.Importer
                     {
                         _isoHandler.WriteNewFile(originFile, targetFile);
 
-                        if (originFile.Type != FileType.AUDIO || originFile.Type != FileType.SOUNDEFFECT)
+                        if (originFile.Type != FileType.AUDIO && originFile.Type != FileType.SOUNDEFFECT)
                         {
                             continue;
                         }
