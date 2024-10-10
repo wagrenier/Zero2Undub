@@ -52,7 +52,10 @@ namespace Zero2UndubProcess.GameFiles
                     NumberFiles = GameRegionConstants.EuIsoConstants.NumberFiles,
                     FileArchiveEndAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndAddress,
                     FileArchiveEndIsoAddress = GameRegionConstants.EuIsoConstants.FileArchiveEndIsoAddress,
-                    LogoDatOffset = GameRegionConstants.EuIsoConstants.LogoDatOffset
+                    LogoDatOffset = GameRegionConstants.EuIsoConstants.LogoDatOffset,
+                    DmyEntryOffset = GameRegionConstants.EuIsoConstants.DmyEntryOffset,
+                    DmyEntrySize = GameRegionConstants.EuIsoConstants.DmyEntrySize,
+                    BinEntryOffset = GameRegionConstants.EuIsoConstants.BinEntryOffset
                 },
                 GameRegions.USA => new RegionInfo
                 {
@@ -62,7 +65,10 @@ namespace Zero2UndubProcess.GameFiles
                     NumberFiles = GameRegionConstants.UsIsoConstants.NumberFiles,
                     FileArchiveEndAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndAddress,
                     FileArchiveEndIsoAddress = GameRegionConstants.UsIsoConstants.FileArchiveEndIsoAddress,
-                    LogoDatOffset = GameRegionConstants.UsIsoConstants.LogoDatOffset
+                    LogoDatOffset = GameRegionConstants.UsIsoConstants.LogoDatOffset,
+                    DmyEntryOffset = GameRegionConstants.UsIsoConstants.DmyEntryOffset,
+                    DmyEntrySize = GameRegionConstants.UsIsoConstants.DmyEntrySize,
+                    BinEntryOffset = GameRegionConstants.UsIsoConstants.BinEntryOffset
                 },
                 GameRegions.Japan => new RegionInfo
                 {
@@ -72,7 +78,10 @@ namespace Zero2UndubProcess.GameFiles
                     NumberFiles = GameRegionConstants.JpIsoConstants.NumberFiles,
                     FileArchiveEndAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndAddress,
                     FileArchiveEndIsoAddress = GameRegionConstants.JpIsoConstants.FileArchiveEndIsoAddress,
-                    LogoDatOffset = GameRegionConstants.JpIsoConstants.LogoDatOffset
+                    LogoDatOffset = GameRegionConstants.JpIsoConstants.LogoDatOffset,
+                    DmyEntryOffset = GameRegionConstants.JpIsoConstants.DmyEntryOffset,
+                    DmyEntrySize = GameRegionConstants.JpIsoConstants.DmyEntrySize,
+                    BinEntryOffset = GameRegionConstants.JpIsoConstants.BinEntryOffset
                 },
                 GameRegions.UNKNOWN => throw new Exception("Unknown game region."),
                 _=> throw new Exception("Unknown game region.")
@@ -123,7 +132,10 @@ namespace Zero2UndubProcess.GameFiles
         public long FileArchiveEndAddress { get; set; }
         public long FileArchiveEndIsoAddress { get; set; }
         public long LogoDatOffset { get; set; }
+        public long BinEntryOffset { get; set; }
         public int NumberFiles { get; init; }
+        public long[] DmyEntryOffset { get; set; }
+        public long[] DmyEntrySize { get; set; }
     }
 
     public enum GameRegions

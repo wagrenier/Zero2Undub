@@ -29,6 +29,28 @@ namespace Zero2UndubProcess.Iso
             {
                 _writer.Write(0x00);
             }
+            
+            var adjustedDmyFilesOffset = _writer.BaseStream.Position - _regionInfo.FileArchiveEndIsoAddress;
+            var adjustedBinFileSize = _writer.BaseStream.Position - _regionInfo.FileArchiveStartAddress;
+            
+            /// Write the DMY files at the end of the ISO
+            for (var i = 0; i < 12054841; i++)
+            {
+                _writer.Write('a');
+            }
+
+            _writer.Seek((int)_regionInfo.BinEntryOffset, SeekOrigin.Begin);
+            _writer.Write((uint) adjustedBinFileSize);
+            
+            var finalIsoSize = _writer.BaseStream.Position;
+
+            var offs = 0;
+            for (var i = 0; i < _regionInfo.DmyEntryOffset.Length; i++)
+            {
+                _writer.Seek((int) _regionInfo.DmyEntryOffset[i], SeekOrigin.Begin);
+                _writer.Write((uint) adjustedDmyFilesOffset + offs);
+                offs += (int) _regionInfo.DmyEntryOffset[i];
+            }
         }
 
         public void OverwriteFile(ZeroFile origin, ZeroFile target, byte[] fileContent)
